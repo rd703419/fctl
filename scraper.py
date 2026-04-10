@@ -17,11 +17,11 @@ Lucas County Sources:
   - Lucas Co. Sheriff RealAuction (fallback)
 
 Enrichment:
-  - Zillow Zestimate lookup for each address
-  - 60% of Zestimate column
+  - HomeHarvest (Realtor.com) — estimated property values, no API key required
+  - 60% of estimated value column
 """
 
-import json, re, os, sys, hashlib, time, urllib.parse
+import json, re, os, sys, hashlib, time
 from datetime import datetime, timedelta
 from urllib.request import urlopen, Request
 from urllib.error import URLError, HTTPError
@@ -203,36 +203,31 @@ def scrape_washington_times():
                 zip_m = re.search(r'\b(2[012]\d{3})\b', addr + " " + notice_text)
 
                 results.append({
-                    "id":            uid(f"wt-{link}"),
-                    "address":       addr[:80],
-                    "zip":           zip_m.group(1) if zip_m else "",
-                    "county":        county,
-                    "market":        market,
-                    "stage":         "Auction",
-                    "filed":         TODAY,
-                    "auction":       auction_date,
-                    "est_value":     loan_amount,
-                    "source":        f"Washington Times ({default_county})",
-                    "url":           link,
-                    "notes":         notice_text[:300],
-                    "tax_owed":      None,
+                    "id":              uid(f"wt-{link}"),
+                    "address":         addr[:80],
+                    "zip":             zip_m.group(1) if zip_m else "",
+                    "county":          county,
+                    "market":          market,
+                    "stage":           "Auction",
+                    "filed":           TODAY,
+                    "auction":         auction_date,
+                    "est_value":       loan_amount,
+                    "source":          f"Washington Times ({default_county})",
+                    "url":             link,
+                    "notes":           notice_text[:300],
+                    "tax_owed":        None,
                     "redemption_period": "",
-                    "tax_rate":      None,
-                    "zestimate":     None,
+                    "tax_rate":        None,
+                    "zestimate":       None,
                     "zestimate_60pct": None,
-                    "scraped":       TODAY,
+                    "scraped":         TODAY,
                 })
                 page_count += 1
 
             cat_total += page_count
-
             if page_count == 0:
                 break
-
-            has_next = bool(re.search(
-                rf'href="[^"]*/{page + 1}\.html"',
-                html, re.IGNORECASE
-            ))
+            has_next = bool(re.search(rf'href="[^"]*/{page + 1}\.html"', html, re.IGNORECASE))
             if not has_next:
                 break
 
@@ -282,24 +277,24 @@ def scrape_rosenberg():
         dep_val = extract_money(deposit)
 
         results.append({
-            "id":            uid(f"rosenberg-{case_no}-{address}"),
-            "address":       f"{address.upper()}, {city.upper()}, {state.upper()} {zip_c}".strip(", "),
-            "zip":           zip_c[:5],
-            "county":        county,
-            "market":        "dmv",
-            "stage":         "Auction",
-            "filed":         TODAY,
-            "auction":       auction,
-            "est_value":     dep_val * 10 if dep_val else None,
-            "source":        "Rosenberg & Assoc.",
-            "url":           url,
-            "notes":         f"Case: {case_no}. Deposit: {deposit}",
-            "tax_owed":      None,
+            "id":              uid(f"rosenberg-{case_no}-{address}"),
+            "address":         f"{address.upper()}, {city.upper()}, {state.upper()} {zip_c}".strip(", "),
+            "zip":             zip_c[:5],
+            "county":          county,
+            "market":          "dmv",
+            "stage":           "Auction",
+            "filed":           TODAY,
+            "auction":         auction,
+            "est_value":       dep_val * 10 if dep_val else None,
+            "source":          "Rosenberg & Assoc.",
+            "url":             url,
+            "notes":           f"Case: {case_no}. Deposit: {deposit}",
+            "tax_owed":        None,
             "redemption_period": "",
-            "tax_rate":      None,
-            "zestimate":     None,
+            "tax_rate":        None,
+            "zestimate":       None,
             "zestimate_60pct": None,
-            "scraped":       TODAY,
+            "scraped":         TODAY,
         })
 
     print(f"[Rosenberg] {len(results)} listings", flush=True)
@@ -346,45 +341,45 @@ def scrape_taxva():
         if addrs:
             for addr in addrs[:20]:
                 results.append({
-                    "id":            uid(f"taxva-{clean(addr).upper()}"),
-                    "address":       clean(addr).upper()[:80],
-                    "zip":           "",
-                    "county":        county,
-                    "market":        "dmv",
-                    "stage":         "Tax Deed",
-                    "filed":         TODAY,
-                    "auction":       auction,
-                    "est_value":     None,
-                    "source":        "TACS (taxva.com)",
-                    "url":           link,
-                    "notes":         f"VA tax deed sale — {locality}",
-                    "tax_owed":      None,
+                    "id":              uid(f"taxva-{clean(addr).upper()}"),
+                    "address":         clean(addr).upper()[:80],
+                    "zip":             "",
+                    "county":          county,
+                    "market":          "dmv",
+                    "stage":           "Tax Deed",
+                    "filed":           TODAY,
+                    "auction":         auction,
+                    "est_value":       None,
+                    "source":          "TACS (taxva.com)",
+                    "url":             link,
+                    "notes":           f"VA tax deed sale — {locality}",
+                    "tax_owed":        None,
                     "redemption_period": "",
-                    "tax_rate":      None,
-                    "zestimate":     None,
+                    "tax_rate":        None,
+                    "zestimate":       None,
                     "zestimate_60pct": None,
-                    "scraped":       TODAY,
+                    "scraped":         TODAY,
                 })
         else:
             results.append({
-                "id":            uid(f"taxva-{locality}-{date_str or TODAY}"),
-                "address":       f"Multiple properties — {locality}",
-                "zip":           "",
-                "county":        county,
-                "market":        "dmv",
-                "stage":         "Tax Deed",
-                "filed":         TODAY,
-                "auction":       auction,
-                "est_value":     None,
-                "source":        "TACS (taxva.com)",
-                "url":           link,
-                "notes":         f"VA tax deed sale — {locality}. See link for properties.",
-                "tax_owed":      None,
+                "id":              uid(f"taxva-{locality}-{date_str or TODAY}"),
+                "address":         f"Multiple properties — {locality}",
+                "zip":             "",
+                "county":          county,
+                "market":          "dmv",
+                "stage":           "Tax Deed",
+                "filed":           TODAY,
+                "auction":         auction,
+                "est_value":       None,
+                "source":          "TACS (taxva.com)",
+                "url":             link,
+                "notes":           f"VA tax deed sale — {locality}. See link for properties.",
+                "tax_owed":        None,
                 "redemption_period": "",
-                "tax_rate":      None,
-                "zestimate":     None,
+                "tax_rate":        None,
+                "zestimate":       None,
                 "zestimate_60pct": None,
-                "scraped":       TODAY,
+                "scraped":         TODAY,
             })
 
     print(f"[TACS/taxva] {len(results)} listings", flush=True)
@@ -421,24 +416,24 @@ def scrape_auction_com():
                     val   = item.get("price") or item.get("offers",{}).get("price")
                     zip_m = re.search(r'\b(\d{5})\b', full)
                     results.append({
-                        "id":            uid(f"auctioncom-{full}"),
-                        "address":       full.upper()[:80],
-                        "zip":           zip_m.group(1) if zip_m else "",
-                        "county":        county_from_text(full) or default_county,
-                        "market":        market,
-                        "stage":         "Auction",
-                        "filed":         TODAY,
-                        "auction":       None,
-                        "est_value":     int(float(str(val).replace(",",""))) if val else None,
-                        "source":        "Auction.com",
-                        "url":           url,
-                        "notes":         "",
-                        "tax_owed":      None,
+                        "id":              uid(f"auctioncom-{full}"),
+                        "address":         full.upper()[:80],
+                        "zip":             zip_m.group(1) if zip_m else "",
+                        "county":          county_from_text(full) or default_county,
+                        "market":          market,
+                        "stage":           "Auction",
+                        "filed":           TODAY,
+                        "auction":         None,
+                        "est_value":       int(float(str(val).replace(",",""))) if val else None,
+                        "source":          "Auction.com",
+                        "url":             url,
+                        "notes":           "",
+                        "tax_owed":        None,
                         "redemption_period": "",
-                        "tax_rate":      None,
-                        "zestimate":     None,
+                        "tax_rate":        None,
+                        "zestimate":       None,
                         "zestimate_60pct": None,
-                        "scraped":       TODAY,
+                        "scraped":         TODAY,
                     })
                     count += 1
             except (json.JSONDecodeError, KeyError, ValueError, AttributeError):
@@ -455,24 +450,24 @@ def scrape_auction_com():
                 seen.add(addr_c)
                 zip_m = re.search(r'\b(4360\d|4361\d|4362\d|2[012]\d{3})\b', addr_c)
                 results.append({
-                    "id":            uid(f"auctioncom-{addr_c}"),
-                    "address":       addr_c[:80],
-                    "zip":           zip_m.group(1) if zip_m else "",
-                    "county":        county_from_text(addr_c) or default_county,
-                    "market":        market,
-                    "stage":         "Auction",
-                    "filed":         TODAY,
-                    "auction":       None,
-                    "est_value":     extract_money(prices[i]) if i < len(prices) else None,
-                    "source":        "Auction.com",
-                    "url":           url,
-                    "notes":         "",
-                    "tax_owed":      None,
+                    "id":              uid(f"auctioncom-{addr_c}"),
+                    "address":         addr_c[:80],
+                    "zip":             zip_m.group(1) if zip_m else "",
+                    "county":          county_from_text(addr_c) or default_county,
+                    "market":          market,
+                    "stage":           "Auction",
+                    "filed":           TODAY,
+                    "auction":         None,
+                    "est_value":       extract_money(prices[i]) if i < len(prices) else None,
+                    "source":          "Auction.com",
+                    "url":             url,
+                    "notes":           "",
+                    "tax_owed":        None,
                     "redemption_period": "",
-                    "tax_rate":      None,
-                    "zestimate":     None,
+                    "tax_rate":        None,
+                    "zestimate":       None,
                     "zestimate_60pct": None,
-                    "scraped":       TODAY,
+                    "scraped":         TODAY,
                 })
                 count += 1
 
@@ -517,24 +512,24 @@ def scrape_amlin():
         min_bid = extract_money(title)
 
         results.append({
-            "id":            uid(f"amlin-{addr}"),
-            "address":       addr[:80],
-            "zip":           zip_m.group(1) if zip_m else "",
-            "county":        "Lucas",
-            "market":        "lucas",
-            "stage":         "Auction",
-            "filed":         TODAY,
-            "auction":       auction,
-            "est_value":     min_bid,
-            "source":        "Amlin Auctions",
-            "url":           link if link.startswith("http") else f"https://www.amlinauctions.com{link}",
-            "notes":         title,
-            "tax_owed":      None,
+            "id":              uid(f"amlin-{addr}"),
+            "address":         addr[:80],
+            "zip":             zip_m.group(1) if zip_m else "",
+            "county":          "Lucas",
+            "market":          "lucas",
+            "stage":           "Auction",
+            "filed":           TODAY,
+            "auction":         auction,
+            "est_value":       min_bid,
+            "source":          "Amlin Auctions",
+            "url":             link if link.startswith("http") else f"https://www.amlinauctions.com{link}",
+            "notes":           title,
+            "tax_owed":        None,
             "redemption_period": "",
-            "tax_rate":      None,
-            "zestimate":     None,
+            "tax_rate":        None,
+            "zestimate":       None,
             "zestimate_60pct": None,
-            "scraped":       TODAY,
+            "scraped":         TODAY,
         })
 
     print(f"[Amlin Auctions] {len(results)} listings", flush=True)
@@ -577,7 +572,6 @@ def scrape_toledo_legal():
 
         if not addr or addr in seen or len(addr) < 10: continue
         if re.match(r'^CI\d', addr) or re.match(r'^\d{4}-', addr): continue
-
         seen.add(addr)
 
         zip_m  = re.search(r'\b(4360\d|4361\d|4362\d)\b', block)
@@ -587,24 +581,24 @@ def scrape_toledo_legal():
         case_m = re.search(r'[Cc]ase\s+#?\s*(CI[\w\-]+)', block)
 
         results.append({
-            "id":            uid(f"tln-{addr}"),
-            "address":       addr[:80],
-            "zip":           zip_m.group(1) if zip_m else "",
-            "county":        "Lucas",
-            "market":        "lucas",
-            "stage":         "Auction",
-            "filed":         TODAY,
-            "auction":       parse_date(date_m.group(1)) if date_m else None,
-            "est_value":     val,
-            "source":        "Toledo Legal News",
-            "url":           url,
-            "notes":         f"Case: {case_m.group(1)}" if case_m else clean(block[:150]),
-            "tax_owed":      None,
+            "id":              uid(f"tln-{addr}"),
+            "address":         addr[:80],
+            "zip":             zip_m.group(1) if zip_m else "",
+            "county":          "Lucas",
+            "market":          "lucas",
+            "stage":           "Auction",
+            "filed":           TODAY,
+            "auction":         parse_date(date_m.group(1)) if date_m else None,
+            "est_value":       val,
+            "source":          "Toledo Legal News",
+            "url":             url,
+            "notes":           f"Case: {case_m.group(1)}" if case_m else clean(block[:150]),
+            "tax_owed":        None,
             "redemption_period": "",
-            "tax_rate":      None,
-            "zestimate":     None,
+            "tax_rate":        None,
+            "zestimate":       None,
             "zestimate_60pct": None,
-            "scraped":       TODAY,
+            "scraped":         TODAY,
         })
 
     print(f"[Toledo Legal News] {len(results)} listings", flush=True)
@@ -633,24 +627,24 @@ def scrape_pamela_rose():
         seen.add(addr_c)
         zip_m = re.search(r'\b(4360\d|4361\d|4362\d)\b', addr_c)
         results.append({
-            "id":            uid(f"pamrose-{addr_c}"),
-            "address":       addr_c[:80],
-            "zip":           zip_m.group(1) if zip_m else "",
-            "county":        "Lucas",
-            "market":        "lucas",
-            "stage":         "Auction",
-            "filed":         TODAY,
-            "auction":       None,
-            "est_value":     None,
-            "source":        "Pamela Rose Auction",
-            "url":           url,
-            "notes":         "",
-            "tax_owed":      None,
+            "id":              uid(f"pamrose-{addr_c}"),
+            "address":         addr_c[:80],
+            "zip":             zip_m.group(1) if zip_m else "",
+            "county":          "Lucas",
+            "market":          "lucas",
+            "stage":           "Auction",
+            "filed":           TODAY,
+            "auction":         None,
+            "est_value":       None,
+            "source":          "Pamela Rose Auction",
+            "url":             url,
+            "notes":           "",
+            "tax_owed":        None,
             "redemption_period": "",
-            "tax_rate":      None,
-            "zestimate":     None,
+            "tax_rate":        None,
+            "zestimate":       None,
             "zestimate_60pct": None,
-            "scraped":       TODAY,
+            "scraped":         TODAY,
         })
 
     print(f"[Pamela Rose] {len(results)} listings", flush=True)
@@ -695,24 +689,24 @@ def scrape_lucas_sheriff_auction():
 
             zip_m = re.search(r'\b(4360\d|4361\d|4362\d)\b', addr_c)
             results.append({
-                "id":            uid(f"lucassheriff-{addr_c}"),
-                "address":       addr_c[:80],
-                "zip":           zip_m.group(1) if zip_m else "",
-                "county":        "Lucas",
-                "market":        "lucas",
-                "stage":         "Auction",
-                "filed":         TODAY,
-                "auction":       parse_date(dates[i]) if i < len(dates) else None,
-                "est_value":     extract_money(prices[i]) if i < len(prices) else None,
-                "source":        "Lucas Co. Sheriff (RealAuction)",
-                "url":           "https://lucas.sheriffsaleauction.ohio.gov/",
-                "notes":         "",
-                "tax_owed":      None,
+                "id":              uid(f"lucassheriff-{addr_c}"),
+                "address":         addr_c[:80],
+                "zip":             zip_m.group(1) if zip_m else "",
+                "county":          "Lucas",
+                "market":          "lucas",
+                "stage":           "Auction",
+                "filed":           TODAY,
+                "auction":         parse_date(dates[i]) if i < len(dates) else None,
+                "est_value":       extract_money(prices[i]) if i < len(prices) else None,
+                "source":          "Lucas Co. Sheriff (RealAuction)",
+                "url":             "https://lucas.sheriffsaleauction.ohio.gov/",
+                "notes":           "",
+                "tax_owed":        None,
                 "redemption_period": "",
-                "tax_rate":      None,
-                "zestimate":     None,
+                "tax_rate":        None,
+                "zestimate":       None,
                 "zestimate_60pct": None,
-                "scraped":       TODAY,
+                "scraped":         TODAY,
             })
 
         if results:
@@ -723,57 +717,91 @@ def scrape_lucas_sheriff_auction():
     return []
 
 
-# ── Zillow Zestimate lookup ────────────────────────────────────────────────
+# ── HomeHarvest value lookup ───────────────────────────────────────────────
 
-def get_zillow_zestimate(address, zip_code):
-    if not address:
-        return None, None
-
-    search_addr = re.sub(r'\s+(UNIT|APT|#|STE|SUITE)\s*[\w\-]+', '', address, flags=re.IGNORECASE)
-    search_addr = re.sub(r',.*$', '', search_addr).strip()
-    query = f"{search_addr} {zip_code}".strip() if zip_code else search_addr
-
-    encoded = urllib.parse.quote(query)
-    url = f"https://www.zillow.com/search/GetSearchPageState.htm?searchQueryState=%7B%22usersSearchTerm%22%3A%22{encoded}%22%7D&wants=%7B%22cat1%22%3A%5B%22mapResults%22%5D%7D&requestId=1"
-
+def get_homeharvest_value(address, zip_code):
+    """
+    Look up estimated property value via HomeHarvest (Realtor.com).
+    Searches for recent sold comps near the address and returns the
+    estimated_value or last_sold_price of the closest match.
+    No API key required — completely free.
+    Returns (estimated_value, sixty_pct) or (None, None).
+    """
     try:
-        time.sleep(1.5)
-        html = fetch(url, timeout=15)
-        if not html:
-            return None, None
+        from homeharvest import scrape_property
 
-        data  = json.loads(html)
-        props = (data.get("cat1", {})
-                     .get("searchResults", {})
-                     .get("mapResults", []))
+        # Build search query from address
+        search_loc = address
+        if zip_code:
+            search_loc = zip_code  # ZIP code search is more reliable
+        else:
+            # Strip unit numbers for cleaner search
+            search_loc = re.sub(r'\s+(UNIT|APT|#|STE|SUITE)\s*[\w\-]+', '', address, flags=re.IGNORECASE)
+            search_loc = re.sub(r',.*$', '', search_loc).strip()
 
-        for prop in props[:3]:
-            zest = (prop.get("hdpData", {})
-                        .get("homeInfo", {})
-                        .get("zestimate"))
-            if zest:
-                zestimate = int(zest)
-                return zestimate, int(zestimate * 0.60)
+        time.sleep(1.0)  # polite delay
 
-    except (json.JSONDecodeError, KeyError, TypeError):
-        pass
+        # Try to find the property as a sold listing first for best value data
+        props = scrape_property(
+            location=search_loc,
+            listing_type="sold",
+            past_days=365,
+            radius=0.1,   # tight radius — 0.1 mile
+            limit=5,
+            extra_property_data=False,
+        )
 
-    try:
-        time.sleep(1.5)
-        suggest_url = f"https://www.zillow.com/homes/{urllib.parse.quote(query)}_rb/"
-        html = fetch(suggest_url, timeout=15)
-        if html:
-            zest_m = re.search(r'"zestimate"\s*:\s*(\d+)', html)
-            if zest_m:
-                zestimate = int(zest_m.group(1))
-                return zestimate, int(zestimate * 0.60)
-    except Exception:
-        pass
+        if props is not None and len(props) > 0:
+            row = props.iloc[0]
+            # Prefer estimated_value, fall back to sold_price
+            val = None
+            for field in ["estimated_value", "sold_price", "list_price"]:
+                if field in row and row[field] and not str(row[field]) in ("nan", "None", ""):
+                    try:
+                        val = int(float(row[field]))
+                        if val > 10000:  # sanity check
+                            break
+                    except (ValueError, TypeError):
+                        pass
+
+            if val:
+                return val, int(val * 0.60)
+
+        # Fallback: search for_sale listings near address
+        time.sleep(1.0)
+        props = scrape_property(
+            location=search_loc,
+            listing_type="for_sale",
+            radius=0.25,
+            limit=5,
+            extra_property_data=False,
+        )
+
+        if props is not None and len(props) > 0:
+            row = props.iloc[0]
+            for field in ["estimated_value", "list_price"]:
+                if field in row and row[field] and str(row[field]) not in ("nan", "None", ""):
+                    try:
+                        val = int(float(row[field]))
+                        if val > 10000:
+                            return val, int(val * 0.60)
+                    except (ValueError, TypeError):
+                        pass
+
+    except ImportError:
+        print("  [HomeHarvest] not installed — skipping valuation", file=sys.stderr)
+    except Exception as e:
+        print(f"  [HomeHarvest] lookup failed for {address}: {e}", file=sys.stderr)
 
     return None, None
 
 
-def enrich_with_zestimates(listings):
+def enrich_with_values(listings):
+    """
+    Adds zestimate and zestimate_60pct fields using HomeHarvest.
+    Only looks up NEW listings that don't already have a value.
+    Skips placeholders like 'Multiple properties —'.
+    """
     to_lookup = [
         r for r in listings
         if not r.get("zestimate")
@@ -782,23 +810,28 @@ def enrich_with_zestimates(listings):
         and not r["address"].startswith("See listing")
     ]
 
-    print(f"[Zillow] Looking up {len(to_lookup)} addresses...", flush=True)
+    if not to_lookup:
+        print("[HomeHarvest] No new addresses to look up", flush=True)
+        return listings
+
+    print(f"[HomeHarvest] Looking up {len(to_lookup)} new addresses...", flush=True)
     found = 0
 
     for i, r in enumerate(to_lookup):
-        zest, sixty = get_zillow_zestimate(r["address"], r.get("zip", ""))
-        r["zestimate"]       = zest
+        val, sixty = get_homeharvest_value(r["address"], r.get("zip",""))
+        r["zestimate"]       = val
         r["zestimate_60pct"] = sixty
-        if zest:
+        if val:
             found += 1
         if (i + 1) % 10 == 0:
             print(f"  [{i+1}/{len(to_lookup)}] {found} found so far...", flush=True)
 
+    # Ensure all listings have the fields
     for r in listings:
         r.setdefault("zestimate", None)
         r.setdefault("zestimate_60pct", None)
 
-    print(f"[Zillow] Done — {found}/{len(to_lookup)} zestimates found", flush=True)
+    print(f"[HomeHarvest] Done — {found}/{len(to_lookup)} values found", flush=True)
     return listings
 
 
@@ -820,23 +853,19 @@ def load_existing():
     except (FileNotFoundError, json.JSONDecodeError): return []
 
 def load_user_edits():
-    """Load shared user edits from the repo to respect deletions."""
     try:
-        with open("data/user_edits.json") as f:
-            return json.load(f)
-    except (FileNotFoundError, json.JSONDecodeError):
-        return {}
+        with open("data/user_edits.json") as f: return json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError): return {}
 
 def merge(existing, incoming):
-    cutoff     = (datetime.utcnow() - timedelta(days=90)).strftime("%Y-%m-%d")
-    user_edits = load_user_edits()
+    cutoff      = (datetime.utcnow() - timedelta(days=90)).strftime("%Y-%m-%d")
+    user_edits  = load_user_edits()
     deleted_ids = {id for id, val in user_edits.items() if val.get("_deleted")}
 
     by_id = {r["id"]: r for r in existing}
     for r in incoming:
-        # Never re-add a user-deleted listing
         if r["id"] in deleted_ids:
-            continue
+            continue  # never re-add deleted listings
         if r["id"] in by_id:
             old = by_id[r["id"]]
             by_id[r["id"]] = {
@@ -887,7 +916,8 @@ def main():
     existing = load_existing()
     merged   = merge(existing, incoming)
 
-    merged = enrich_with_zestimates(merged)
+    # Enrich only new listings with HomeHarvest values
+    merged = enrich_with_values(merged)
 
     merged.sort(key=lambda r: r.get("filed") or "", reverse=True)
 
