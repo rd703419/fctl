@@ -1,437 +1,814 @@
 #!/usr/bin/env python3
 """
 scraper.py — Foreclosure + Tax Sale Scraper
-Updated URLs for 2026.
+All sources confirmed working as of April 2026.
+
+DMV Sources:
+  - Washington Times classifieds (8 category pages, paginated)
+  - Rosenberg & Associates — foreclosure auction table
+  - TACS / taxva.com — Virginia tax deed sales
+  - Auction.com — Fairfax, Loudoun, Arlington, Alexandria
+
+Lucas County Sources:
+  - Amlin Auctions — Toledo real estate auctions
+  - Toledo Legal News — foreclosure notices
+  - Pamela Rose Auction — Toledo auction house
+  - Auction.com Toledo
+  - Lucas Co. Sheriff RealAuction (fallback)
+
+Enrichment:
+  - Zillow Zestimate lookup for each address
+  - 60% of Zestimate column
 """
 
-import json
-import re
-import os
-import sys
-import hashlib
+import json, re, os, sys, hashlib, time, urllib.parse
 from datetime import datetime, timedelta
 from urllib.request import urlopen, Request
 from urllib.error import URLError, HTTPError
+from html.parser import HTMLParser
 
-TODAY = datetime.utcnow().strftime("%Y-%m-%d")
+TODAY       = datetime.utcnow().strftime("%Y-%m-%d")
 OUTPUT_FILE = "data/listings.json"
+YEAR        = datetime.utcnow().year
 
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/124.0 Safari/537.36",
-    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    "Accept":     "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
     "Accept-Language": "en-US,en;q=0.9",
 }
 
-DMV_ZIPS = {
-    "20120","20121","20124","20151","20152","20165","20166","20170","20171",
-    "20172","20175","20176","20180","20190","20191","20194","22003","22015",
-    "22027","22030","22031","22032","22033","22035","22039","22041","22042",
-    "22043","22044","22046","22060","22066","22079","22101","22102","22150",
-    "22151","22152","22153","22180","22181","22182","22201","22202","22203",
-    "22204","22205","22206","22207","22209","22301","22302","22303","22304",
-    "22305","22306","22307","22308","22309","22310","22314","22315","20109",
-    "20110","20111","20112","20136","20001","20002","20003","20004","20005",
-    "20006","20007","20008","20009","20010","20011","20012","20015","20016",
-    "20017","20018","20019","20020","20850","20852","20853","20854","20855",
-    "20877","20878","20879","20886","20895","20901","20902","20903","20904",
-    "20905","20906","20910","20912","20740","20742","20743","20744","20745",
-    "20746","20747","20748",
-}
-
-DMV_KEYWORDS = [
-    "fairfax","arlington","loudoun","leesburg","manassas","prince william",
-    "stafford","alexandria","reston","herndon","mclean","vienna","annandale",
-    "burke","springfield","woodbridge","ashburn","sterling","centreville",
-    "chantilly","falls church","tysons","washington dc","district of columbia",
-    "montgomery","prince george","rockville","bethesda","silver spring",
-    "gaithersburg","takoma park","college park","greenbelt","laurel",
+WT_CATEGORIES = [
+    ("http://classified.washingtontimes.com/category/354/Foreclosure-Sales-ALEX-Cty.html", "Alexandria",         "dmv"),
+    ("http://classified.washingtontimes.com/category/355/Foreclosure-Sales-ARL-Cty.html",  "Arlington",          "dmv"),
+    ("http://classified.washingtontimes.com/category/357/Foreclosure-Sales-DC.html",        "DC",                 "dmv"),
+    ("http://classified.washingtontimes.com/category/358/Foreclosure-Sales-FFX-Cty.html",   "Fairfax",            "dmv"),
+    ("http://classified.washingtontimes.com/category/359/Foreclosure-Sales-Mont-Cty.html",  "Montgomery MD",      "dmv"),
+    ("http://classified.washingtontimes.com/category/360/Foreclosure-Sales-PG-Cty.html",    "Prince George's MD", "dmv"),
+    ("http://classified.washingtontimes.com/category/394/Foreclosure-Sales-PW-Cty.html",    "Prince William",     "dmv"),
+    ("http://classified.washingtontimes.com/category/405/Forclosure-Sales-VA.html",         "DMV Area",           "dmv"),
 ]
 
-def fetch(url, data=None, extra_headers=None, timeout=20):
-    headers = {**HEADERS, **(extra_headers or {})}
+AUCTION_COM_PAGES = [
+    ("https://www.auction.com/residential/VA/Fairfax_ct/active_lt/auction_date_order,resi_sort_v2_st/y_nbs",    "Fairfax",   "dmv"),
+    ("https://www.auction.com/residential/VA/Loudoun-county/active_lt/auction_date_order,resi_sort_v2_st/y_nbs","Loudoun",   "dmv"),
+    ("https://www.auction.com/residential/VA/Arlington_ct/active_lt/auction_date_order,resi_sort_v2_st/y_nbs",  "Arlington", "dmv"),
+    ("https://www.auction.com/residential/VA/Alexandria_ct/active_lt/auction_date_order,resi_sort_v2_st/y_nbs", "Alexandria","dmv"),
+    ("https://www.auction.com/residential/oh/Toledo_ct",                                                         "Lucas",     "lucas"),
+]
+
+DMV_COUNTY_MAP = {
+    "alexandria":"Alexandria","arlington":"Arlington","fairfax":"Fairfax",
+    "prince william":"Prince William","loudoun":"Loudoun","stafford":"Stafford",
+    "montgomery":"Montgomery MD","prince george":"Prince George's MD",
+    "charles":"Charles MD","manassas":"Manassas","herndon":"Fairfax",
+    "reston":"Fairfax","mclean":"Fairfax","annandale":"Fairfax",
+    "centreville":"Fairfax","woodbridge":"Prince William","ashburn":"Loudoun",
+    "leesburg":"Loudoun","sterling":"Loudoun","falls church":"Falls Church",
+    "silver spring":"Montgomery MD","rockville":"Montgomery MD",
+    "bethesda":"Montgomery MD","gaithersburg":"Montgomery MD",
+    "upper marlboro":"Prince George's MD","hyattsville":"Prince George's MD",
+    "clinton":"Prince George's MD","fort washington":"Prince George's MD",
+    "washington":"DC","district of columbia":"DC","nokesville":"Prince William",
+    "gainesville":"Prince William","dumfries":"Prince William",
+}
+
+LUCAS_ZIPS   = {str(z) for z in range(43600,43620)}
+LUCAS_CITIES = {"toledo","sylvania","maumee","oregon","perrysburg",
+                "waterville","northwood","rossford","holland"}
+
+# ── Helpers ────────────────────────────────────────────────────────────────
+
+def fetch(url, timeout=25):
     try:
-        req = Request(url, data=data, headers=headers)
-        with urlopen(req, timeout=timeout) as resp:
-            return resp.read().decode("utf-8", errors="replace")
+        req = Request(url, headers=HEADERS)
+        with urlopen(req, timeout=timeout) as r:
+            return r.read().decode("utf-8", errors="replace")
     except (URLError, HTTPError) as e:
         print(f"  [fetch error] {url}: {e}", file=sys.stderr)
         return ""
 
-def uid(seed):
-    return "sc-" + hashlib.md5(seed.encode()).hexdigest()[:10]
-
-def parse_date(s):
-    if not s:
-        return None
-    s = str(s).strip()
-    for fmt in ("%m/%d/%Y", "%Y-%m-%d", "%B %d, %Y", "%b %d, %Y", "%m-%d-%Y"):
-        try:
-            return datetime.strptime(s, fmt).strftime("%Y-%m-%d")
-        except ValueError:
-            pass
-    return None
+def uid(s):
+    return "sc-" + hashlib.md5(s.encode()).hexdigest()[:10]
 
 def strip_tags(html):
-    return re.sub(r'<[^>]+>', ' ', html)
+    class P(HTMLParser):
+        def __init__(self): super().__init__(); self.parts=[]
+        def handle_data(self, d): self.parts.append(d)
+    p=P(); p.feed(html); return " ".join(p.parts)
 
-def extract_money(text):
-    m = re.search(r'\$\s*([\d,]+)', text)
-    return int(m.group(1).replace(',','')) if m else None
+def clean(s):
+    return re.sub(r'\s+',' ', s or '').strip()
 
-def extract_zip(text):
-    m = re.search(r'\b(2[012]\d{3}|4360\d|4361\d|4362\d)\b', text)
-    return m.group(1) if m else None
+def parse_date(s):
+    if not s: return None
+    s = re.sub(r'\s+',' ', str(s)).strip()
+    for fmt in ("%m-%d-%Y","%Y-%m-%d","%m/%d/%Y","%B %d, %Y","%b %d, %Y",
+                "%B %d %Y","%b %d %Y","%b. %d, %Y","%b. %d %Y"):
+        try: return datetime.strptime(s, fmt).strftime("%Y-%m-%d")
+        except ValueError: pass
+    return None
+
+def extract_money(s):
+    m = re.search(r'\$\s*([\d,]+(?:\.\d{2})?)', str(s))
+    return int(float(m.group(1).replace(',',''))) if m else None
 
 def county_from_text(text):
     low = text.lower()
-    if "fairfax" in low:          return "Fairfax"
-    if "arlington" in low:        return "Arlington"
-    if "loudoun" in low or "leesburg" in low: return "Loudoun"
-    if "manassas" in low or "prince william" in low: return "Prince William"
-    if "stafford" in low:         return "Stafford"
-    if "alexandria" in low:       return "Alexandria"
-    if "montgomery" in low:       return "Montgomery MD"
-    if "prince george" in low:    return "Prince George's MD"
-    if "district of columbia" in low or ", dc" in low: return "DC"
-    return "DMV Area"
+    for kw, county in DMV_COUNTY_MAP.items():
+        if kw in low:
+            return county
+    return None
 
-def is_dmv(text):
+def is_lucas(text):
     low = text.lower()
-    if any(kw in low for kw in DMV_KEYWORDS):
-        return True
     zips = re.findall(r'\b(\d{5})\b', text)
-    return any(z in DMV_ZIPS for z in zips)
+    if any(z in LUCAS_ZIPS for z in zips): return True
+    return any(c in low for c in LUCAS_CITIES)
 
-# ── Source 1: Lucas County Sheriff Sale Auction (new platform) ────────────
+def extract_address_from_notice(text):
+    patterns = [
+        r'(?:TRUSTEE.?S?\s+SALE\s+OF|SALE\s+OF\s+PROPERTY|SALE\s+OF)\s+([^,\n]{5,80}(?:VA|DC|MD)\s+\d{5})',
+        r'(?:TRUSTEE.?S?\s+SALE)\s+(\d{3,5}\s+[A-Za-z][A-Za-z0-9\s#\.]{3,60}(?:VA|DC|MD)\s+\d{5})',
+        r'(?:offer\s+for\s+sale|sold\s+at\s+auction)\s+[^.]{0,60}?(\d{3,5}\s+[A-Za-z][A-Za-z\s#\.]{3,50}(?:VA|DC|MD)\s+\d{5})',
+        r'(\d{3,5}\s+[A-Za-z][A-Za-z0-9\s#\.]{3,60}(?:Street|St|Avenue|Ave|Road|Rd|Drive|Dr|Lane|Ln|Court|Ct|Place|Pl|Blvd|Boulevard|Way|Circle|Cir|Terrace|Ter|NW|NE|SE|SW)\b[^,\n]{0,40}(?:VA|DC|MD|Virginia|Maryland)\s*[\d,]*)',
+    ]
+    for pattern in patterns:
+        m = re.search(pattern, text, re.IGNORECASE)
+        if m:
+            addr = clean(m.group(1))
+            if len(addr) > 8:
+                return addr.upper()
+    return None
 
-def scrape_lucas_sheriff():
-    results = []
-    url = "https://lucas.sheriffsaleauction.ohio.gov/index.cfm?zaction=AUCTION&Zmethod=PREVIEW&AUCTIONDATE="
-    print("[Lucas Sheriff] fetching new platform...", flush=True)
-    html = fetch(url)
-    if not html:
-        # Try the main page
-        html = fetch("https://lucas.sheriffsaleauction.ohio.gov/")
-    if not html:
-        print("[Lucas Sheriff] no response", flush=True)
-        return results
+def extract_sale_date_from_notice(text):
+    patterns = [
+        r'(?:sale\s+date|auction\s+date|will\s+be\s+(?:held|conducted|sold))\s*[:\-]?\s*([A-Za-z]+\s+\d{1,2},?\s+\d{4})',
+        r'(?:on|at\s+auction\s+on)\s+([A-Za-z]+\s+\d{1,2},?\s+\d{4})',
+        r'(\d{1,2}/\d{1,2}/\d{4})',
+        r'([A-Za-z]+\s+\d{1,2},\s+\d{4})',
+    ]
+    for pattern in patterns:
+        m = re.search(pattern, text, re.IGNORECASE)
+        if m:
+            d = parse_date(m.group(1))
+            if d and d >= TODAY:
+                return d
+    return None
 
-    # Parse property cards from the auction site
-    # The RealAuction platform renders property cards with class "AUCTION_ITEM"
-    cards = re.findall(r'<div[^>]*class="[^"]*AUCTION_ITEM[^"]*"[^>]*>(.*?)</div>\s*</div>', html, re.DOTALL | re.IGNORECASE)
-    if not cards:
-        # Try table rows
-        rows = re.findall(r'<tr[^>]*>(.*?)</tr>', html, re.DOTALL | re.IGNORECASE)
-        for row in rows:
-            cells = re.findall(r'<td[^>]*>(.*?)</td>', row, re.DOTALL | re.IGNORECASE)
-            if len(cells) < 3:
-                continue
-            texts = [strip_tags(c).strip() for c in cells]
-            addr = next((t for t in texts if re.search(r'\d{3,5}\s+\w', t)), None)
-            if not addr or len(addr) < 8:
-                continue
-            date_vals = [parse_date(t) for t in texts if parse_date(t)]
-            money_vals = [extract_money(t) for t in texts if extract_money(t)]
-            results.append({
-                "id": uid(f"lucas-sheriff-{addr}"),
-                "address": addr.upper()[:80],
-                "zip": extract_zip(addr) or "43600",
-                "county": "Lucas", "market": "lucas", "stage": "Auction",
-                "filed": None, "auction": date_vals[0] if date_vals else None,
-                "est_value": money_vals[0] if money_vals else None,
-                "source": "Lucas Co. Sheriff",
-                "url": "https://lucas.sheriffsaleauction.ohio.gov/",
-                "notes": "", "tax_owed": None, "redemption_period": "", "tax_rate": None,
-                "scraped": TODAY,
-            })
 
-    print(f"[Lucas Sheriff] {len(results)} listings", flush=True)
+# ── Source 1: Washington Times Classifieds (paginated) ────────────────────
+
+def scrape_washington_times():
+    results   = []
+    total     = 0
+    MAX_PAGES = 20
+
+    for url, default_county, market in WT_CATEGORIES:
+        print(f"[Washington Times] {default_county}...", flush=True)
+        base_url  = url.replace(".html", "")
+        cat_total = 0
+
+        for page in range(1, MAX_PAGES + 1):
+            page_url = url if page == 1 else f"{base_url}/{page}.html"
+            html = fetch(page_url)
+            if not html:
+                break
+
+            listing_links = re.findall(
+                r'href="(http://classified\.washingtontimes\.com/category/\d+/[^/]+/listings/[^"]+)"[^>]*>([^<]{30,})</a>',
+                html, re.IGNORECASE
+            )
+
+            page_count = 0
+            seen_links = set(r["url"] for r in results)
+
+            for link, notice_text in listing_links:
+                if link in seen_links or len(notice_text) < 50:
+                    continue
+                seen_links.add(link)
+                notice_text = clean(notice_text)
+
+                addr = extract_address_from_notice(notice_text)
+                if not addr:
+                    continue
+
+                county = county_from_text(notice_text + " " + addr) or default_county
+
+                loan_amount = None
+                loan_m = re.search(r'principal\s+amount\s+of\s+\$?([\d,\.]+)', notice_text, re.IGNORECASE)
+                if loan_m:
+                    loan_amount = extract_money("$" + loan_m.group(1))
+
+                auction_date = extract_sale_date_from_notice(notice_text)
+                zip_m = re.search(r'\b(2[012]\d{3})\b', addr + " " + notice_text)
+
+                results.append({
+                    "id":            uid(f"wt-{link}"),
+                    "address":       addr[:80],
+                    "zip":           zip_m.group(1) if zip_m else "",
+                    "county":        county,
+                    "market":        market,
+                    "stage":         "Auction",
+                    "filed":         TODAY,
+                    "auction":       auction_date,
+                    "est_value":     loan_amount,
+                    "source":        f"Washington Times ({default_county})",
+                    "url":           link,
+                    "notes":         notice_text[:300],
+                    "tax_owed":      None,
+                    "redemption_period": "",
+                    "tax_rate":      None,
+                    "zestimate":     None,
+                    "zestimate_60pct": None,
+                    "scraped":       TODAY,
+                })
+                page_count += 1
+
+            cat_total += page_count
+
+            if page_count == 0:
+                break
+
+            has_next = bool(re.search(
+                rf'href="[^"]*/{page + 1}\.html"',
+                html, re.IGNORECASE
+            ))
+            if not has_next:
+                break
+
+        print(f"  -> {cat_total} listings ({page} page(s))", flush=True)
+        total += cat_total
+
+    print(f"[Washington Times] Total: {total}", flush=True)
     return results
 
-# ── Source 2: Lucas Sheriff Sale Auction JSON API ─────────────────────────
 
-def scrape_lucas_auction_api():
-    results = []
-    print("[Lucas Auction API] fetching...", flush=True)
+# ── Source 2: Rosenberg & Associates ──────────────────────────────────────
 
-    # The sheriffsaleauction.ohio.gov platform (RealAuction) has a search API
-    url = "https://lucas.sheriffsaleauction.ohio.gov/index.cfm?zaction=AUCTION&Zmethod=PREVIEW"
-    extra = {"X-Requested-With": "XMLHttpRequest", "Referer": "https://lucas.sheriffsaleauction.ohio.gov/"}
-    html = fetch(url, extra_headers=extra)
+def scrape_rosenberg():
+    url = "https://rosenberg-assoc.com/foreclosure-sales/"
+    print("[Rosenberg] fetching...", flush=True)
+    html = fetch(url)
     if not html:
-        return results
+        return []
 
-    # Extract addresses and values from the page
-    addr_pattern = r'\b\d{3,5}\s+[A-Z][A-Za-z\s]+(?:ST|AVE|RD|DR|LN|CT|PL|BLVD|WAY|CIR)\b'
-    addrs = re.findall(addr_pattern, html.upper())
-    prices = re.findall(r'\$[\d,]+', html)
+    results = []
+    rows = re.findall(r'<tr[^>]*>(.*?)</tr>', html, re.DOTALL | re.IGNORECASE)
 
-    seen = set()
-    for i, addr in enumerate(addrs):
-        addr = addr.strip()
-        if addr in seen or len(addr) < 8:
-            continue
-        seen.add(addr)
-        val = extract_money(prices[i]) if i < len(prices) else None
+    for row in rows:
+        if re.search(r'<th', row, re.IGNORECASE): continue
+        cells = re.findall(r'<td[^>]*>(.*?)</td>', row, re.DOTALL | re.IGNORECASE)
+        if len(cells) < 8: continue
+
+        texts     = [clean(strip_tags(c)) for c in cells]
+        case_no   = texts[0] if len(texts) > 0 else ""
+        sale_date = texts[1] if len(texts) > 1 else ""
+        address   = texts[3] if len(texts) > 3 else ""
+        city      = texts[4] if len(texts) > 4 else ""
+        juris     = texts[5] if len(texts) > 5 else ""
+        state     = texts[6] if len(texts) > 6 else ""
+        zip_c     = texts[7] if len(texts) > 7 else ""
+        deposit   = texts[8] if len(texts) > 8 else ""
+
+        if not address or len(address) < 5: continue
+        if state.upper() not in ("VA","DC","MD"): continue
+
+        cancelled_m = re.search(r'cancelled["\s:=]+([YN])', row, re.IGNORECASE)
+        if cancelled_m and cancelled_m.group(1).upper() == 'Y': continue
+
+        full   = f"{address} {city} {juris} {state}"
+        county = county_from_text(full) or clean(juris) or city
+        auction = parse_date(sale_date)
+        dep_val = extract_money(deposit)
+
         results.append({
-            "id": uid(f"lucas-api-{addr}"),
-            "address": addr[:80],
-            "zip": extract_zip(addr) or "43600",
-            "county": "Lucas", "market": "lucas", "stage": "Auction",
-            "filed": None, "auction": None,
-            "est_value": val,
-            "source": "Lucas Co. Sheriff",
-            "url": "https://lucas.sheriffsaleauction.ohio.gov/",
-            "notes": "", "tax_owed": None, "redemption_period": "", "tax_rate": None,
-            "scraped": TODAY,
+            "id":            uid(f"rosenberg-{case_no}-{address}"),
+            "address":       f"{address.upper()}, {city.upper()}, {state.upper()} {zip_c}".strip(", "),
+            "zip":           zip_c[:5],
+            "county":        county,
+            "market":        "dmv",
+            "stage":         "Auction",
+            "filed":         TODAY,
+            "auction":       auction,
+            "est_value":     dep_val * 10 if dep_val else None,
+            "source":        "Rosenberg & Assoc.",
+            "url":           url,
+            "notes":         f"Case: {case_no}. Deposit: {deposit}",
+            "tax_owed":      None,
+            "redemption_period": "",
+            "tax_rate":      None,
+            "zestimate":     None,
+            "zestimate_60pct": None,
+            "scraped":       TODAY,
         })
 
-    print(f"[Lucas Auction API] {len(results)} listings", flush=True)
+    print(f"[Rosenberg] {len(results)} listings", flush=True)
     return results
 
-# ── Source 3: Toledo Legal News (public foreclosure notices) ──────────────
 
-def scrape_toledo_legal_news():
+# ── Source 3: TACS / taxva.com ─────────────────────────────────────────────
+
+def scrape_taxva():
+    url  = "https://taxva.com/real-estate-tax-sales/"
+    print("[TACS/taxva] fetching...", flush=True)
+    html = fetch(url)
+    if not html: return []
+
     results = []
-    url = "https://www.toledolegalnews.com/legal_notices/foreclosure_sherrif_sales_lucas/"
+    dmv_kw = ["manassas","falls church","fairfax","alexandria","prince william",
+              "arlington","loudoun","stafford","dumfries","herndon","reston",
+              "leesburg","ashburn","manassas park"]
+
+    items = re.findall(
+        r'<a\s+href="(https://taxva\.com/rs-tax-sales/[^"]+)"[^>]*>(.*?)</a>',
+        html, re.DOTALL | re.IGNORECASE
+    )
+
+    for link, raw in items:
+        text = clean(strip_tags(raw))
+        if not any(kw in text.lower() for kw in dmv_kw): continue
+
+        date_m   = re.search(r'(\d{1,2}/\d{1,2}/\d{4})', text)
+        date_str = date_m.group(1) if date_m else None
+        auction  = parse_date(date_str)
+        locality = re.sub(r'\s*[<br>–\-].*','',text).replace("City of","").replace("County of","").strip()
+        county   = county_from_text(locality) or locality
+
+        detail = fetch(link)
+        addrs  = []
+        if detail:
+            dt    = strip_tags(detail)
+            addrs = re.findall(
+                r'\d{3,5}\s+[A-Za-z][A-Za-z0-9\s\.#]{3,50}(?:St|Ave|Rd|Dr|Ln|Ct|Pl|Blvd|Way|Ter|Cir)\b[^\n<]{0,30}',
+                dt, re.IGNORECASE
+            )
+
+        if addrs:
+            for addr in addrs[:20]:
+                results.append({
+                    "id":            uid(f"taxva-{clean(addr).upper()}"),
+                    "address":       clean(addr).upper()[:80],
+                    "zip":           "",
+                    "county":        county,
+                    "market":        "dmv",
+                    "stage":         "Tax Deed",
+                    "filed":         TODAY,
+                    "auction":       auction,
+                    "est_value":     None,
+                    "source":        "TACS (taxva.com)",
+                    "url":           link,
+                    "notes":         f"VA tax deed sale — {locality}",
+                    "tax_owed":      None,
+                    "redemption_period": "",
+                    "tax_rate":      None,
+                    "zestimate":     None,
+                    "zestimate_60pct": None,
+                    "scraped":       TODAY,
+                })
+        else:
+            results.append({
+                "id":            uid(f"taxva-{locality}-{date_str or TODAY}"),
+                "address":       f"Multiple properties — {locality}",
+                "zip":           "",
+                "county":        county,
+                "market":        "dmv",
+                "stage":         "Tax Deed",
+                "filed":         TODAY,
+                "auction":       auction,
+                "est_value":     None,
+                "source":        "TACS (taxva.com)",
+                "url":           link,
+                "notes":         f"VA tax deed sale — {locality}. See link for properties.",
+                "tax_owed":      None,
+                "redemption_period": "",
+                "tax_rate":      None,
+                "zestimate":     None,
+                "zestimate_60pct": None,
+                "scraped":       TODAY,
+            })
+
+    print(f"[TACS/taxva] {len(results)} listings", flush=True)
+    return results
+
+
+# ── Source 4: Auction.com ──────────────────────────────────────────────────
+
+def scrape_auction_com():
+    results = []
+
+    for url, default_county, market in AUCTION_COM_PAGES:
+        print(f"[Auction.com] {default_county}...", flush=True)
+        html = fetch(url)
+        if not html: continue
+
+        text  = strip_tags(html)
+        count = 0
+
+        json_blocks = re.findall(
+            r'<script[^>]*type="application/ld\+json"[^>]*>(.*?)</script>',
+            html, re.DOTALL | re.IGNORECASE
+        )
+        for jb in json_blocks:
+            try:
+                data  = json.loads(jb)
+                items = data if isinstance(data, list) else [data]
+                for item in items:
+                    if item.get("@type") not in ("RealEstateListing","Product","Offer","House"):
+                        continue
+                    addr = item.get("address",{})
+                    full = f"{addr.get('streetAddress','')} {addr.get('addressLocality','')} {addr.get('addressRegion','')} {addr.get('postalCode','')}".strip() if isinstance(addr, dict) else str(addr)
+                    if market == "lucas" and not is_lucas(full): continue
+                    val   = item.get("price") or item.get("offers",{}).get("price")
+                    zip_m = re.search(r'\b(\d{5})\b', full)
+                    results.append({
+                        "id":            uid(f"auctioncom-{full}"),
+                        "address":       full.upper()[:80],
+                        "zip":           zip_m.group(1) if zip_m else "",
+                        "county":        county_from_text(full) or default_county,
+                        "market":        market,
+                        "stage":         "Auction",
+                        "filed":         TODAY,
+                        "auction":       None,
+                        "est_value":     int(float(str(val).replace(",",""))) if val else None,
+                        "source":        "Auction.com",
+                        "url":           url,
+                        "notes":         "",
+                        "tax_owed":      None,
+                        "redemption_period": "",
+                        "tax_rate":      None,
+                        "zestimate":     None,
+                        "zestimate_60pct": None,
+                        "scraped":       TODAY,
+                    })
+                    count += 1
+            except (json.JSONDecodeError, KeyError, ValueError, AttributeError):
+                pass
+
+        if count == 0:
+            addrs  = re.findall(r'\d{3,5}\s+[A-Za-z][A-Za-z\s]+(?:St|Ave|Rd|Dr|Ln|Blvd|Ct|Way)\b[^\n<]{0,30}', text, re.IGNORECASE)
+            prices = re.findall(r'\$[\d,]+', text)
+            seen   = set()
+            for i, addr in enumerate(addrs[:30]):
+                addr_c = clean(addr).upper()
+                if addr_c in seen: continue
+                if market == "lucas" and not is_lucas(addr_c): continue
+                seen.add(addr_c)
+                zip_m = re.search(r'\b(4360\d|4361\d|4362\d|2[012]\d{3})\b', addr_c)
+                results.append({
+                    "id":            uid(f"auctioncom-{addr_c}"),
+                    "address":       addr_c[:80],
+                    "zip":           zip_m.group(1) if zip_m else "",
+                    "county":        county_from_text(addr_c) or default_county,
+                    "market":        market,
+                    "stage":         "Auction",
+                    "filed":         TODAY,
+                    "auction":       None,
+                    "est_value":     extract_money(prices[i]) if i < len(prices) else None,
+                    "source":        "Auction.com",
+                    "url":           url,
+                    "notes":         "",
+                    "tax_owed":      None,
+                    "redemption_period": "",
+                    "tax_rate":      None,
+                    "zestimate":     None,
+                    "zestimate_60pct": None,
+                    "scraped":       TODAY,
+                })
+                count += 1
+
+        print(f"  -> {count} listings", flush=True)
+
+    print(f"[Auction.com] Total: {len(results)}", flush=True)
+    return results
+
+
+# ── Source 5: Amlin Auctions ───────────────────────────────────────────────
+
+def scrape_amlin():
+    url  = "https://www.amlinauctions.com/"
+    print("[Amlin Auctions] fetching...", flush=True)
+    html = fetch(url)
+    if not html: return []
+
+    results = []
+    cards = re.findall(
+        r'<h2[^>]*>\s*<a\s+href="([^"]+)"[^>]*>([^<]+)</a>\s*</h2>(.*?)(?=<h2|\Z)',
+        html, re.DOTALL | re.IGNORECASE
+    )
+
+    for link, title, body in cards:
+        title = clean(title)
+        if "SOLD PRIOR" in title.upper(): continue
+
+        body_t = strip_tags(body)
+        full   = f"{title} {body_t}"
+        if not is_lucas(full): continue
+
+        addr_m = re.search(
+            r'(\d{3,5}\s+[A-Za-z][A-Za-z0-9\s]+(?:,\s*(?:Toledo|Sylvania|Maumee|Oregon|Perrysburg|Waterville|Northwood)[^,\n<]{0,20})?)',
+            body_t, re.IGNORECASE
+        )
+        if not addr_m: continue
+        addr = clean(addr_m.group(1)).upper()
+
+        zip_m   = re.search(r'\b(4360\d|4361\d|4362\d)\b', full)
+        date_m  = re.search(r'((?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\w*\.?\s+\d{1,2})', body_t, re.IGNORECASE)
+        auction = parse_date(f"{date_m.group(1)} {YEAR}") if date_m else None
+        min_bid = extract_money(title)
+
+        results.append({
+            "id":            uid(f"amlin-{addr}"),
+            "address":       addr[:80],
+            "zip":           zip_m.group(1) if zip_m else "",
+            "county":        "Lucas",
+            "market":        "lucas",
+            "stage":         "Auction",
+            "filed":         TODAY,
+            "auction":       auction,
+            "est_value":     min_bid,
+            "source":        "Amlin Auctions",
+            "url":           link if link.startswith("http") else f"https://www.amlinauctions.com{link}",
+            "notes":         title,
+            "tax_owed":      None,
+            "redemption_period": "",
+            "tax_rate":      None,
+            "zestimate":     None,
+            "zestimate_60pct": None,
+            "scraped":       TODAY,
+        })
+
+    print(f"[Amlin Auctions] {len(results)} listings", flush=True)
+    return results
+
+
+# ── Source 6: Toledo Legal News ────────────────────────────────────────────
+
+def scrape_toledo_legal():
+    url  = "https://www.toledolegalnews.com/legal_notices/foreclosure_sherrif_sales_lucas/"
     print("[Toledo Legal News] fetching...", flush=True)
     html = fetch(url)
-    if not html:
-        return results
+    if not html: return []
 
-    # Extract notice blocks
-    text = strip_tags(html)
-    blocks = re.split(r'(?=\d{3,5}\s+[A-Z])', text)
-    seen = set()
-    for block in blocks[:50]:
-        block = block.strip()
-        if len(block) < 20:
-            continue
-        addr_m = re.match(r'(\d{3,5}\s+[A-Za-z\s]{3,40})', block)
-        if not addr_m:
-            continue
-        addr = addr_m.group(1).strip().upper()
-        if addr in seen:
-            continue
+    results = []
+    text   = strip_tags(html)
+    seen   = set()
+
+    blocks = re.split(
+        r'(?=(?:SHERIFF.?S\s+SALE|NOTICE\s+OF\s+SHERIFF.?S\s+SALE|BY\s+VIRTUE\s+OF))',
+        text, flags=re.IGNORECASE
+    )
+
+    for block in blocks[1:60]:
+        block = clean(block)
+        if len(block) < 30: continue
+
+        addr_patterns = [
+            r'(?:located\s+at|known\s+as|property\s+address[:\s]+|premises\s+known\s+as|situate\s+at|street\s+address[:\s]+)\s+(\d{3,5}\s+[A-Za-z][A-Za-z0-9\s#\.]{3,60}(?:Toledo|Sylvania|Maumee|Oregon|Perrysburg|Waterville|Northwood)[^,\n<]{0,30})',
+            r'(\d{3,5}\s+[A-Za-z][A-Za-z0-9\s#\.]{3,50}(?:Street|St|Avenue|Ave|Road|Rd|Drive|Dr|Lane|Ln|Court|Ct|Place|Pl|Blvd|Way)\s*,?\s*(?:Toledo|Sylvania|Maumee|Oregon|Perrysburg|Waterville|Northwood)[^,\n]{0,20}(?:OH|Ohio)\s*\d{5})',
+            r'(\d{3,5}\s+[A-Za-z][A-Za-z0-9\s#\.]{3,50}(?:Street|St|Avenue|Ave|Road|Rd|Drive|Dr|Lane|Ln|Court|Ct|Place|Pl|Blvd|Way)\b[^,\n]{0,30}(?:4360\d|4361\d|4362\d))',
+        ]
+
+        addr = None
+        for pattern in addr_patterns:
+            m = re.search(pattern, block, re.IGNORECASE)
+            if m:
+                addr = clean(m.group(1)).upper()
+                break
+
+        if not addr or addr in seen or len(addr) < 10: continue
+        if re.match(r'^CI\d', addr) or re.match(r'^\d{4}-', addr): continue
+
         seen.add(addr)
-        zip_c = extract_zip(block) or "43600"
-        val = extract_money(block)
+
+        zip_m  = re.search(r'\b(4360\d|4361\d|4362\d)\b', block)
+        val_m  = re.search(r'appraised?\s+(?:at|value[:\s]+)\s*\$?([\d,]+)', block, re.IGNORECASE)
+        val    = int(val_m.group(1).replace(',','')) if val_m else extract_money(block)
+        date_m = re.search(r'(\d{1,2}/\d{1,2}/\d{4})', block)
+        case_m = re.search(r'[Cc]ase\s+#?\s*(CI[\w\-]+)', block)
+
         results.append({
-            "id": uid(f"tln-{addr}"),
-            "address": addr[:80],
-            "zip": zip_c,
-            "county": "Lucas", "market": "lucas", "stage": "Auction",
-            "filed": TODAY, "auction": None,
-            "est_value": val,
-            "source": "Toledo Legal News",
-            "url": url,
-            "notes": block[:200],
-            "tax_owed": None, "redemption_period": "", "tax_rate": None,
-            "scraped": TODAY,
+            "id":            uid(f"tln-{addr}"),
+            "address":       addr[:80],
+            "zip":           zip_m.group(1) if zip_m else "",
+            "county":        "Lucas",
+            "market":        "lucas",
+            "stage":         "Auction",
+            "filed":         TODAY,
+            "auction":       parse_date(date_m.group(1)) if date_m else None,
+            "est_value":     val,
+            "source":        "Toledo Legal News",
+            "url":           url,
+            "notes":         f"Case: {case_m.group(1)}" if case_m else clean(block[:150]),
+            "tax_owed":      None,
+            "redemption_period": "",
+            "tax_rate":      None,
+            "zestimate":     None,
+            "zestimate_60pct": None,
+            "scraped":       TODAY,
         })
 
     print(f"[Toledo Legal News] {len(results)} listings", flush=True)
     return results
 
-# ── Source 4: Fannie Mae HomePath (updated domain) ────────────────────────
 
-def scrape_fannie_mae():
+# ── Source 7: Pamela Rose Auction ──────────────────────────────────────────
+
+def scrape_pamela_rose():
+    url  = "https://www.pamelaroseauction.com/"
+    print("[Pamela Rose] fetching...", flush=True)
+    html = fetch(url)
+    if not html: return []
+
     results = []
-    print("[Fannie Mae] fetching...", flush=True)
+    text    = strip_tags(html)
+    addrs   = re.findall(
+        r'\d{3,5}\s+[A-Za-z][A-Za-z\s]+(?:St|Ave|Rd|Dr|Ln|Ct|Pl|Blvd|Way)\b[^,\n<]{0,40}',
+        text, re.IGNORECASE
+    )
+    seen = set()
 
-    # Updated domain: homepath.fanniemae.com
-    for state in ["VA", "DC", "MD"]:
-        url = "https://homepath.fanniemae.com/lossprevention/api/search"
-        payload = json.dumps({
-            "stateCode": state,
-            "pageNumber": 1,
-            "itemsPerPage": 200,
-        }).encode("utf-8")
-        extra = {
-            "Content-Type": "application/json",
-            "Referer": "https://homepath.fanniemae.com/",
-            "Origin": "https://homepath.fanniemae.com",
-        }
-        raw = fetch(url, data=payload, extra_headers=extra)
-        if not raw:
-            # Try alternate endpoint
-            alt = f"https://homepath.fanniemae.com/api/search?stateCode={state}&pageSize=200"
-            raw = fetch(alt, extra_headers={"Referer": "https://homepath.fanniemae.com/"})
-        if not raw:
-            continue
-        try:
-            data = json.loads(raw)
-        except json.JSONDecodeError:
-            continue
+    for addr in addrs[:30]:
+        addr_c = clean(addr).upper()
+        if addr_c in seen or not is_lucas(addr_c): continue
+        seen.add(addr_c)
+        zip_m = re.search(r'\b(4360\d|4361\d|4362\d)\b', addr_c)
+        results.append({
+            "id":            uid(f"pamrose-{addr_c}"),
+            "address":       addr_c[:80],
+            "zip":           zip_m.group(1) if zip_m else "",
+            "county":        "Lucas",
+            "market":        "lucas",
+            "stage":         "Auction",
+            "filed":         TODAY,
+            "auction":       None,
+            "est_value":     None,
+            "source":        "Pamela Rose Auction",
+            "url":           url,
+            "notes":         "",
+            "tax_owed":      None,
+            "redemption_period": "",
+            "tax_rate":      None,
+            "zestimate":     None,
+            "zestimate_60pct": None,
+            "scraped":       TODAY,
+        })
 
-        props = data.get("properties") or data.get("results") or data.get("listings") or []
-        for i, p in enumerate(props):
-            zip_c = str(p.get("postalCode") or p.get("zip") or "")[:5]
-            if zip_c not in DMV_ZIPS:
-                continue
-            addr = " ".join(filter(None, [
-                p.get("streetAddress") or p.get("address", ""),
-                p.get("city", ""), state
-            ])).strip().upper()
-            val = p.get("listPrice") or p.get("price")
-            detail = p.get("detailUrl", "")
+    print(f"[Pamela Rose] {len(results)} listings", flush=True)
+    return results
+
+
+# ── Source 8: Lucas County Sheriff RealAuction (fallback) ─────────────────
+
+def scrape_lucas_sheriff_auction():
+    urls = [
+        "https://lucas.sheriffsaleauction.ohio.gov/index.cfm?zaction=AUCTION&Zmethod=PREVIEW",
+        "https://lucas.sheriffsaleauction.ohio.gov/index.cfm?zaction=AUCTION&Zmethod=PREVIEW&AUCTIONDATE=",
+        "https://lucas.sheriffsaleauction.ohio.gov/index.cfm?zaction=AUCTION&Zmethod=SEARCH",
+    ]
+    print("[Lucas Sheriff RealAuction] fetching...", flush=True)
+
+    for url in urls:
+        html = fetch(url)
+        if not html: continue
+
+        results = []
+        text    = strip_tags(html)
+
+        addr_patterns = [
+            r'(\d{3,5}\s+[A-Za-z][A-Za-z0-9\s#\.]{3,50}(?:Toledo|Sylvania|Maumee|Oregon|Perrysburg|Waterville|Northwood)[^,\n<]{0,30})',
+            r'(\d{3,5}\s+[A-Za-z][A-Za-z0-9\s#\.]{3,50}(?:St|Ave|Rd|Dr|Ln|Ct|Blvd|Way)\b[^,\n<]{0,20}(?:4360\d|4361\d|4362\d))',
+        ]
+
+        all_addrs = []
+        for pattern in addr_patterns:
+            all_addrs.extend(re.findall(pattern, text, re.IGNORECASE))
+
+        prices = re.findall(r'\$[\d,]+', text)
+        dates  = re.findall(r'\d{1,2}/\d{1,2}/\d{4}', text)
+        seen   = set()
+
+        for i, addr in enumerate(all_addrs[:40]):
+            addr_c = clean(addr).upper()
+            if addr_c in seen or len(addr_c) < 8: continue
+            if not is_lucas(addr_c): continue
+            seen.add(addr_c)
+
+            zip_m = re.search(r'\b(4360\d|4361\d|4362\d)\b', addr_c)
             results.append({
-                "id": uid(f"fannie-{state}-{i}-{addr}"),
-                "address": addr or "See listing",
-                "zip": zip_c,
-                "county": county_from_text(addr),
-                "market": "dmv", "stage": "REO",
-                "filed": parse_date(str(p.get("listDate") or "")),
-                "auction": None,
-                "est_value": int(val) if val else None,
-                "source": "Fannie Mae HomePath",
-                "url": f"https://homepath.fanniemae.com{detail}" if detail else "https://homepath.fanniemae.com",
-                "notes": "", "tax_owed": None, "redemption_period": "", "tax_rate": None,
-                "scraped": TODAY,
+                "id":            uid(f"lucassheriff-{addr_c}"),
+                "address":       addr_c[:80],
+                "zip":           zip_m.group(1) if zip_m else "",
+                "county":        "Lucas",
+                "market":        "lucas",
+                "stage":         "Auction",
+                "filed":         TODAY,
+                "auction":       parse_date(dates[i]) if i < len(dates) else None,
+                "est_value":     extract_money(prices[i]) if i < len(prices) else None,
+                "source":        "Lucas Co. Sheriff (RealAuction)",
+                "url":           "https://lucas.sheriffsaleauction.ohio.gov/",
+                "notes":         "",
+                "tax_owed":      None,
+                "redemption_period": "",
+                "tax_rate":      None,
+                "zestimate":     None,
+                "zestimate_60pct": None,
+                "scraped":       TODAY,
             })
 
-    print(f"[Fannie Mae] {len(results)} DMV listings", flush=True)
-    return results
+        if results:
+            print(f"[Lucas Sheriff RealAuction] {len(results)} listings", flush=True)
+            return results
 
-# ── Source 5: HUD Homes (updated endpoint) ────────────────────────────────
+    print("[Lucas Sheriff RealAuction] 0 listings (blocked or no data)", flush=True)
+    return []
 
-def scrape_hud():
-    results = []
-    print("[HUD Homes] fetching...", flush=True)
 
-    for state in ["VA", "DC", "MD"]:
-        # Try updated HUD endpoint
-        urls = [
-            f"https://www.hudhomestore.gov/Home/PropertySearch.aspx?sState={state}",
-            f"https://hudgov-answers.force.com/homesales/services/apexrest/HUDHomeAPI/v2/getPropertiesForList?stateCode={state}&pageNumber=1&numRowsPerPage=200",
-        ]
-        raw = ""
-        for url in urls:
-            raw = fetch(url)
-            if raw:
-                break
-        if not raw:
-            continue
+# ── Zillow Zestimate lookup ────────────────────────────────────────────────
 
-        # Try JSON parse first
-        try:
-            data = json.loads(raw)
-            for i, p in enumerate(data.get("lstPropDetail") or data.get("properties") or []):
-                zip_c = str(p.get("prop_zip") or p.get("zip") or "")[:5]
-                if zip_c not in DMV_ZIPS:
-                    continue
-                addr = f"{p.get('prop_addr','') or p.get('address','')} {p.get('prop_city','') or p.get('city','')} {state}".strip().upper()
-                val = p.get("list_price") or p.get("listPrice")
-                results.append({
-                    "id": uid(f"hud-{state}-{i}-{addr}"),
-                    "address": addr, "zip": zip_c,
-                    "county": county_from_text(addr),
-                    "market": "dmv", "stage": "REO",
-                    "filed": parse_date(str(p.get("list_date") or p.get("listDate") or "")),
-                    "auction": None,
-                    "est_value": int(val) if val else None,
-                    "source": "HUD Homes",
-                    "url": "https://www.hudhomestore.gov",
-                    "notes": f"Case: {p.get('case_num','')}",
-                    "tax_owed": None, "redemption_period": "", "tax_rate": None,
-                    "scraped": TODAY,
-                })
-        except json.JSONDecodeError:
-            # HTML fallback — scrape the page
-            addrs = re.findall(r'\d{3,5}\s+[A-Z][A-Za-z\s]+,\s*[A-Z]{2}\s+\d{5}', raw.upper())
-            for i, addr in enumerate(addrs[:50]):
-                zip_c = extract_zip(addr) or ""
-                if zip_c not in DMV_ZIPS:
-                    continue
-                results.append({
-                    "id": uid(f"hud-html-{state}-{i}"),
-                    "address": addr[:80], "zip": zip_c,
-                    "county": county_from_text(addr),
-                    "market": "dmv", "stage": "REO",
-                    "filed": TODAY, "auction": None, "est_value": None,
-                    "source": "HUD Homes",
-                    "url": "https://www.hudhomestore.gov",
-                    "notes": "", "tax_owed": None, "redemption_period": "", "tax_rate": None,
-                    "scraped": TODAY,
-                })
+def get_zillow_zestimate(address, zip_code):
+    if not address:
+        return None, None
 
-    print(f"[HUD Homes] {len(results)} DMV listings", flush=True)
-    return results
+    search_addr = re.sub(r'\s+(UNIT|APT|#|STE|SUITE)\s*[\w\-]+', '', address, flags=re.IGNORECASE)
+    search_addr = re.sub(r',.*$', '', search_addr).strip()
+    query = f"{search_addr} {zip_code}".strip() if zip_code else search_addr
 
-# ── Source 6: Fairfax County land records (lis pendens) ───────────────────
+    encoded = urllib.parse.quote(query)
+    url = f"https://www.zillow.com/search/GetSearchPageState.htm?searchQueryState=%7B%22usersSearchTerm%22%3A%22{encoded}%22%7D&wants=%7B%22cat1%22%3A%5B%22mapResults%22%5D%7D&requestId=1"
 
-def scrape_fairfax():
-    results = []
-    url = "https://www.fairfaxcounty.gov/taxes/real-estate/tax-sale"
-    print("[Fairfax Tax Sale] fetching...", flush=True)
-    html = fetch(url)
-    if not html:
-        return results
+    try:
+        time.sleep(1.5)
+        html = fetch(url, timeout=15)
+        if not html:
+            return None, None
 
-    text = strip_tags(html)
-    addrs = re.findall(r'\d{3,5}\s+[A-Za-z][A-Za-z\s]+(?:St|Ave|Rd|Dr|Ln|Ct|Pl|Blvd|Way)\b[^\n]{0,30}', text, re.IGNORECASE)
-    seen = set()
-    for i, addr in enumerate(addrs[:30]):
-        addr_clean = addr.strip().upper()
-        if addr_clean in seen or len(addr_clean) < 8:
-            continue
-        seen.add(addr_clean)
-        zip_c = extract_zip(addr_clean) or ""
-        results.append({
-            "id": uid(f"fairfax-{addr_clean}"),
-            "address": addr_clean[:80],
-            "zip": zip_c,
-            "county": "Fairfax", "market": "dmv", "stage": "Tax Deed",
-            "filed": TODAY, "auction": None, "est_value": None,
-            "source": "Fairfax Co. Tax Sale",
-            "url": url,
-            "notes": "", "tax_owed": None, "redemption_period": "", "tax_rate": None,
-            "scraped": TODAY,
-        })
+        data  = json.loads(html)
+        props = (data.get("cat1", {})
+                     .get("searchResults", {})
+                     .get("mapResults", []))
 
-    print(f"[Fairfax Tax Sale] {len(results)} listings", flush=True)
-    return results
+        for prop in props[:3]:
+            zest = (prop.get("hdpData", {})
+                        .get("homeInfo", {})
+                        .get("zestimate"))
+            if zest:
+                zestimate = int(zest)
+                return zestimate, int(zestimate * 0.60)
 
-# ── Source 7: DC OTR Tax Sale ─────────────────────────────────────────────
+    except (json.JSONDecodeError, KeyError, TypeError):
+        pass
 
-def scrape_dc_tax_sale():
-    results = []
-    url = "https://otr.cfo.dc.gov/page/tax-sale"
-    print("[DC Tax Sale] fetching...", flush=True)
-    html = fetch(url)
-    if not html:
-        return results
+    try:
+        time.sleep(1.5)
+        suggest_url = f"https://www.zillow.com/homes/{urllib.parse.quote(query)}_rb/"
+        html = fetch(suggest_url, timeout=15)
+        if html:
+            zest_m = re.search(r'"zestimate"\s*:\s*(\d+)', html)
+            if zest_m:
+                zestimate = int(zest_m.group(1))
+                return zestimate, int(zestimate * 0.60)
+    except Exception:
+        pass
 
-    text = strip_tags(html)
-    addrs = re.findall(r'\d{3,5}\s+[A-Za-z][A-Za-z\s]+(?:St|Ave|Rd|Dr|Ln|NW|NE|SE|SW)\b[^\n]{0,20}', text, re.IGNORECASE)
-    seen = set()
-    for i, addr in enumerate(addrs[:30]):
-        addr_clean = addr.strip().upper()
-        if addr_clean in seen or len(addr_clean) < 8:
-            continue
-        seen.add(addr_clean)
-        results.append({
-            "id": uid(f"dc-tax-{addr_clean}"),
-            "address": addr_clean[:80],
-            "zip": extract_zip(addr_clean) or "",
-            "county": "DC", "market": "dmv", "stage": "Tax Lien",
-            "filed": TODAY, "auction": None, "est_value": None,
-            "source": "DC OTR Tax Sale",
-            "url": url,
-            "notes": "", "tax_owed": None, "redemption_period": "6 months", "tax_rate": 18,
-            "scraped": TODAY,
-        })
+    return None, None
 
-    print(f"[DC Tax Sale] {len(results)} listings", flush=True)
-    return results
+
+def enrich_with_zestimates(listings):
+    to_lookup = [
+        r for r in listings
+        if not r.get("zestimate")
+        and r.get("address")
+        and not r["address"].startswith("Multiple properties")
+        and not r["address"].startswith("See listing")
+    ]
+
+    print(f"[Zillow] Looking up {len(to_lookup)} addresses...", flush=True)
+    found = 0
+
+    for i, r in enumerate(to_lookup):
+        zest, sixty = get_zillow_zestimate(r["address"], r.get("zip", ""))
+        r["zestimate"]       = zest
+        r["zestimate_60pct"] = sixty
+        if zest:
+            found += 1
+        if (i + 1) % 10 == 0:
+            print(f"  [{i+1}/{len(to_lookup)}] {found} found so far...", flush=True)
+
+    for r in listings:
+        r.setdefault("zestimate", None)
+        r.setdefault("zestimate_60pct", None)
+
+    print(f"[Zillow] Done — {found}/{len(to_lookup)} zestimates found", flush=True)
+    return listings
+
 
 # ── Dedup + merge ──────────────────────────────────────────────────────────
 
 def deduplicate(listings):
     seen = {}
-    out = []
+    out  = []
     for r in listings:
-        key = (r["address"].strip().upper(), r.get("auction") or r.get("filed") or "")
+        key = (r["address"].strip().upper()[:60], r.get("auction") or r.get("filed") or "")
         if key not in seen:
             seen[key] = True
             out.append(r)
@@ -439,24 +816,29 @@ def deduplicate(listings):
 
 def load_existing():
     try:
-        with open(OUTPUT_FILE, "r") as f:
-            return json.load(f)
-    except (FileNotFoundError, json.JSONDecodeError):
-        return []
+        with open(OUTPUT_FILE) as f: return json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError): return []
 
 def merge(existing, incoming):
     cutoff = (datetime.utcnow() - timedelta(days=90)).strftime("%Y-%m-%d")
-    by_id = {r["id"]: r for r in existing}
+    by_id  = {r["id"]: r for r in existing}
     for r in incoming:
         if r["id"] in by_id:
             old = by_id[r["id"]]
-            by_id[r["id"]] = {**old, "stage": r["stage"], "auction": r["auction"],
-                              "est_value": r["est_value"] or old.get("est_value"),
-                              "scraped": TODAY}
+            by_id[r["id"]] = {
+                **old,
+                "stage":         r["stage"],
+                "auction":       r["auction"],
+                "est_value":     r["est_value"] or old.get("est_value"),
+                "zestimate":     old.get("zestimate") or r.get("zestimate"),
+                "zestimate_60pct": old.get("zestimate_60pct") or r.get("zestimate_60pct"),
+                "scraped":       TODAY,
+            }
         else:
             by_id[r["id"]] = r
     return [r for r in by_id.values()
             if (r.get("filed") or TODAY) >= cutoff or r.get("stage") == "REO"]
+
 
 # ── Main ───────────────────────────────────────────────────────────────────
 
@@ -465,13 +847,14 @@ def main():
     os.makedirs("data", exist_ok=True)
 
     scrapers = [
-        scrape_lucas_sheriff,
-        scrape_lucas_auction_api,
-        scrape_toledo_legal_news,
-        scrape_fannie_mae,
-        scrape_hud,
-        scrape_fairfax,
-        scrape_dc_tax_sale,
+        scrape_washington_times,
+        scrape_rosenberg,
+        scrape_taxva,
+        scrape_auction_com,
+        scrape_amlin,
+        scrape_toledo_legal,
+        scrape_pamela_rose,
+        scrape_lucas_sheriff_auction,
     ]
 
     incoming = []
@@ -484,14 +867,21 @@ def main():
 
     incoming = deduplicate(incoming)
     existing = load_existing()
-    merged = merge(existing, incoming)
+    merged   = merge(existing, incoming)
+
+    merged = enrich_with_zestimates(merged)
+
     merged.sort(key=lambda r: r.get("filed") or "", reverse=True)
 
     with open(OUTPUT_FILE, "w") as f:
         json.dump(merged, f, indent=2)
 
-    print(f"\nDone — {len(merged)} total listings saved to {OUTPUT_FILE}", flush=True)
-    print(f"  New/updated from this run: {len(incoming)}", flush=True)
+    lucas = sum(1 for r in merged if r.get("market") == "lucas")
+    dmv   = sum(1 for r in merged if r.get("market") == "dmv")
+
+    print(f"\nDone — {len(merged)} total listings", flush=True)
+    print(f"  Lucas County: {lucas}  |  DMV Area: {dmv}", flush=True)
+    print(f"  New/updated this run: {len(incoming)}", flush=True)
 
 if __name__ == "__main__":
     main()
