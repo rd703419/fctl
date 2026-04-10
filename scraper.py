@@ -819,25 +819,43 @@ def load_existing():
         with open(OUTPUT_FILE) as f: return json.load(f)
     except (FileNotFoundError, json.JSONDecodeError): return []
 
+def load_user_edits():
+    """Load shared user edits from the repo to respect deletions."""
+    try:
+        with open("data/user_edits.json") as f:
+            return json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return {}
+
 def merge(existing, incoming):
-    cutoff = (datetime.utcnow() - timedelta(days=90)).strftime("%Y-%m-%d")
-    by_id  = {r["id"]: r for r in existing}
+    cutoff     = (datetime.utcnow() - timedelta(days=90)).strftime("%Y-%m-%d")
+    user_edits = load_user_edits()
+    deleted_ids = {id for id, val in user_edits.items() if val.get("_deleted")}
+
+    by_id = {r["id"]: r for r in existing}
     for r in incoming:
+        # Never re-add a user-deleted listing
+        if r["id"] in deleted_ids:
+            continue
         if r["id"] in by_id:
             old = by_id[r["id"]]
             by_id[r["id"]] = {
                 **old,
-                "stage":         r["stage"],
-                "auction":       r["auction"],
-                "est_value":     r["est_value"] or old.get("est_value"),
-                "zestimate":     old.get("zestimate") or r.get("zestimate"),
+                "stage":           r["stage"],
+                "auction":         r["auction"],
+                "est_value":       r["est_value"] or old.get("est_value"),
+                "zestimate":       old.get("zestimate") or r.get("zestimate"),
                 "zestimate_60pct": old.get("zestimate_60pct") or r.get("zestimate_60pct"),
-                "scraped":       TODAY,
+                "scraped":         TODAY,
             }
         else:
             by_id[r["id"]] = r
-    return [r for r in by_id.values()
-            if (r.get("filed") or TODAY) >= cutoff or r.get("stage") == "REO"]
+
+    return [
+        r for r in by_id.values()
+        if r["id"] not in deleted_ids
+        and ((r.get("filed") or TODAY) >= cutoff or r.get("stage") == "REO")
+    ]
 
 
 # ── Main ───────────────────────────────────────────────────────────────────
