@@ -158,10 +158,56 @@ def extract_sale_date_from_notice(text):
 
 # ── Source 1: Washington Times Classifieds (paginated) ────────────────────
 
+def fetch_wt(url, session=None):
+    """
+    Washington Times blocks urllib with 403.
+    Use requests with a persistent browser session to bypass.
+    """
+    try:
+        import requests as req_lib
+        if session is None:
+            session = req_lib.Session()
+        session.headers.update({
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+            "Accept-Language": "en-US,en;q=0.9",
+            "Accept-Encoding": "gzip, deflate",
+            "Connection": "keep-alive",
+            "Upgrade-Insecure-Requests": "1",
+            "Referer": "http://classified.washingtontimes.com/",
+        })
+        resp = session.get(url, timeout=20)
+        if resp.status_code == 200:
+            return resp.text
+        print(f"  [WT fetch] HTTP {resp.status_code} for {url}", file=sys.stderr)
+        return ""
+    except Exception as e:
+        print(f"  [WT fetch error] {url}: {e}", file=sys.stderr)
+        return ""
+
+
 def scrape_washington_times():
     results   = []
     total     = 0
     MAX_PAGES = 20
+
+    # Use a persistent session so cookies carry across pages
+    try:
+        import requests as req_lib
+        session = req_lib.Session()
+        # Prime the session with the homepage first to pick up cookies
+        session.headers.update({
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            "Accept-Language": "en-US,en;q=0.9",
+        })
+        session.get("http://classified.washingtontimes.com/", timeout=15)
+    except ImportError:
+        print("[Washington Times] requests not installed — skipping", file=sys.stderr)
+        return []
+    except Exception as e:
+        print(f"[Washington Times] session init failed: {e}", file=sys.stderr)
+        session = None
 
     for url, default_county, market in WT_CATEGORIES:
         print(f"[Washington Times] {default_county}...", flush=True)
@@ -170,7 +216,7 @@ def scrape_washington_times():
 
         for page in range(1, MAX_PAGES + 1):
             page_url = url if page == 1 else f"{base_url}/{page}.html"
-            html = fetch(page_url)
+            html = fetch_wt(page_url, session)
             if not html:
                 break
 
@@ -247,6 +293,16 @@ def scrape_rosenberg():
     if not html:
         return []
 
+    # Only pull DMV-area jurisdictions — exclude southern/coastal VA
+    DMV_JURISDICTIONS = {
+        "alexandria","arlington","fairfax","prince william","loudoun",
+        "stafford","manassas","falls church","herndon","reston","mclean",
+        "annandale","centreville","springfield","woodbridge","ashburn",
+        "leesburg","sterling","nokesville","gainesville","dumfries",
+        "district of columbia","montgomery","prince george","charles",
+        "anne arundel","howard","baltimore",
+    }
+
     results = []
     rows = re.findall(r'<tr[^>]*>(.*?)</tr>', html, re.DOTALL | re.IGNORECASE)
 
@@ -270,6 +326,13 @@ def scrape_rosenberg():
 
         cancelled_m = re.search(r'cancelled["\s:=]+([YN])', row, re.IGNORECASE)
         if cancelled_m and cancelled_m.group(1).upper() == 'Y': continue
+
+        # Filter to DMV jurisdictions only
+        juris_low = juris.lower().strip()
+        city_low  = city.lower().strip()
+        if state.upper() == "VA":
+            if not any(dmv in juris_low or dmv in city_low for dmv in DMV_JURISDICTIONS):
+                continue  # skip southern/coastal VA
 
         full   = f"{address} {city} {juris} {state}"
         county = county_from_text(full) or clean(juris) or city
@@ -548,37 +611,48 @@ def scrape_toledo_legal():
     text   = strip_tags(html)
     seen   = set()
 
+    # Split on multiple possible notice headers
     blocks = re.split(
-        r'(?=(?:SHERIFF.?S\s+SALE|NOTICE\s+OF\s+SHERIFF.?S\s+SALE|BY\s+VIRTUE\s+OF))',
+        r'(?=(?:SHERIFF[\'\x27]?S\s+SALE|NOTICE\s+OF\s+SHERIFF|BY\s+VIRTUE\s+OF\s+AN\s+ORDER|IN\s+THE\s+COURT\s+OF\s+COMMON\s+PLEAS))',
         text, flags=re.IGNORECASE
     )
 
-    for block in blocks[1:60]:
-        block = clean(block)
-        if len(block) < 30: continue
+    # Also try splitting on case number patterns if above yields nothing
+    if len(blocks) <= 2:
+        blocks = re.split(r'(?=Case\s+(?:No\.?|#)\s*[A-Z]{1,3}[\d\-]+)', text, flags=re.IGNORECASE)
 
+    for block in blocks[1:80]:
+        block = clean(block)
+        if len(block) < 40: continue
+
+        # Ohio sheriff notice address patterns — ordered best to worst
         addr_patterns = [
-            r'(?:located\s+at|known\s+as|property\s+address[:\s]+|premises\s+known\s+as|situate\s+at|street\s+address[:\s]+)\s+(\d{3,5}\s+[A-Za-z][A-Za-z0-9\s#\.]{3,60}(?:Toledo|Sylvania|Maumee|Oregon|Perrysburg|Waterville|Northwood)[^,\n<]{0,30})',
-            r'(\d{3,5}\s+[A-Za-z][A-Za-z0-9\s#\.]{3,50}(?:Street|St|Avenue|Ave|Road|Rd|Drive|Dr|Lane|Ln|Court|Ct|Place|Pl|Blvd|Way)\s*,?\s*(?:Toledo|Sylvania|Maumee|Oregon|Perrysburg|Waterville|Northwood)[^,\n]{0,20}(?:OH|Ohio)\s*\d{5})',
-            r'(\d{3,5}\s+[A-Za-z][A-Za-z0-9\s#\.]{3,50}(?:Street|St|Avenue|Ave|Road|Rd|Drive|Dr|Lane|Ln|Court|Ct|Place|Pl|Blvd|Way)\b[^,\n]{0,30}(?:4360\d|4361\d|4362\d))',
+            # "located at 1234 Main St, Toledo OH 43601"
+            r'(?:located\s+at|known\s+as|commonly\s+known\s+as|property\s+(?:address|located)\s*[:\-]?|premises\s+known\s+as|situate\s+(?:at|in)|street\s+address\s*[:\-]?)\s*(\d{3,5}\s+[A-Za-z][A-Za-z0-9\s#\.]{3,60}(?:Toledo|Sylvania|Maumee|Oregon|Perrysburg|Waterville|Northwood|Rossford|Holland)[^,\n<]{0,30})',
+            # Full address with city + OH + zip
+            r'(\d{3,5}\s+[A-Za-z][A-Za-z0-9\s#\.]{3,50}(?:Street|St\.?|Avenue|Ave\.?|Road|Rd\.?|Drive|Dr\.?|Lane|Ln\.?|Court|Ct\.?|Place|Pl\.?|Blvd|Boulevard|Way|Terrace|Ter)\s*,?\s*(?:Toledo|Sylvania|Maumee|Oregon|Perrysburg|Waterville|Northwood|Rossford)[^,\n]{0,20}(?:OH|Ohio)\s*\d{5})',
+            # Address + Lucas County zip code
+            r'(\d{3,5}\s+[A-Za-z][A-Za-z0-9\s#\.]{3,50}(?:Street|St\.?|Avenue|Ave\.?|Road|Rd\.?|Drive|Dr\.?|Lane|Ln\.?|Court|Ct\.?|Place|Pl\.?|Blvd|Way)\b[^,\n]{0,30}(?:4360\d|4361\d|4362\d))',
         ]
 
         addr = None
         for pattern in addr_patterns:
             m = re.search(pattern, block, re.IGNORECASE)
             if m:
-                addr = clean(m.group(1)).upper()
-                break
+                candidate = clean(m.group(1)).upper()
+                # Reject if it looks like a case number or is too short
+                if len(candidate) >= 10 and not re.match(r'^CI\d', candidate) and not re.match(r'^\d{4}-', candidate):
+                    addr = candidate
+                    break
 
-        if not addr or addr in seen or len(addr) < 10: continue
-        if re.match(r'^CI\d', addr) or re.match(r'^\d{4}-', addr): continue
+        if not addr or addr in seen: continue
         seen.add(addr)
 
         zip_m  = re.search(r'\b(4360\d|4361\d|4362\d)\b', block)
         val_m  = re.search(r'appraised?\s+(?:at|value[:\s]+)\s*\$?([\d,]+)', block, re.IGNORECASE)
         val    = int(val_m.group(1).replace(',','')) if val_m else extract_money(block)
         date_m = re.search(r'(\d{1,2}/\d{1,2}/\d{4})', block)
-        case_m = re.search(r'[Cc]ase\s+#?\s*(CI[\w\-]+)', block)
+        case_m = re.search(r'[Cc]ase\s+(?:[Nn]o\.?\s+|#\s*)?(CI[\w\-]+|\d{4}[A-Z]{2}\d+)', block)
 
         results.append({
             "id":              uid(f"tln-{addr}"),
