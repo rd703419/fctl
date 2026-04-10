@@ -163,29 +163,28 @@ def scrape_washington_times():
         if not html:
             continue
 
-        listings = re.findall(
-            r'<h2[^>]*>\s*<a\s+href="([^"]+)"[^>]*>([^<]+)</a>\s*</h2>\s*\[([^\]]{20,})',
-            html, re.DOTALL | re.IGNORECASE
+        # Each listing: <h2><a href="LISTING_URL">TITLE</a></h2>
+        # followed by: <a href="LISTING_URL">FULL NOTICE TEXT...</a>
+        # The notice text IS the link text of the second anchor
+        listing_links = re.findall(
+            r'href="(http://classified\.washingtontimes\.com/category/\d+/[^/]+/listings/[^"]+)"[^>]*>([^<]{30,})</a>',
+            html, re.IGNORECASE
         )
-        if not listings:
-            listings = re.findall(
-                r'href="(http://classified\.washingtontimes\.com/category/\d+/[^/]+/listings/[^"]+)"[^>]*>\s*<[^>]+>\s*([^<]{3,60})</[^>]+>\s*\[([^\]]{20,})',
-                html, re.DOTALL | re.IGNORECASE
-            )
 
         count = 0
-        for link, title, snippet in listings:
-            notice_text = clean(snippet)
-            title_clean = clean(title)
+        seen_links = set()
+        for link, notice_text in listing_links:
+            if link in seen_links:
+                continue
+            # Skip short navigation text
+            if len(notice_text) < 50:
+                continue
+            seen_links.add(link)
+            notice_text = clean(notice_text)
 
             addr = extract_address_from_notice(notice_text)
             if not addr:
-                addr = extract_address_from_notice(title_clean)
-            if not addr:
-                if re.search(r'\d{3,5}\s+[A-Za-z]', title_clean):
-                    addr = title_clean.upper()[:80]
-                else:
-                    continue
+                continue
 
             county = county_from_text(notice_text + " " + addr) or default_county
 
@@ -220,7 +219,6 @@ def scrape_washington_times():
 
     print(f"[Washington Times] Total: {total}", flush=True)
     return results
-
 
 # ── Source 2: Rosenberg & Associates ──────────────────────────────────────
 
