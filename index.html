@@ -23,10 +23,11 @@
       </div>
       <div class="header-right">
         <span class="sync-status" id="syncStatus"></span>
+        <span id="lastScraped" style="font-size:11px;color:var(--t3);margin-right:.5rem;"></span>
         <div class="header-btns">
+          <button class="btn ghost" onclick="setupToken()">⚙ Sync setup</button>
           <button class="btn ghost" onclick="openImport()">Import</button>
           <button class="btn ghost" onclick="exportCSV()">Export</button>
-          <button class="btn ghost" onclick="setupToken()">⚙ Sync setup</button>
           <button class="btn primary" onclick="openAdd()">+ Add</button>
         </div>
       </div>
@@ -45,21 +46,21 @@
       <div class="sources-grid">
         <div class="sources-col">
           <div class="sources-col-head">Lucas County, OH</div>
-          <a href="https://www.lucascountysheriff.org/civil/sheriff-sales" target="_blank" class="src-link"><span>Sheriff sales</span><span>lucascountysheriff.org ↗</span></a>
-          <a href="https://lucas.realauction.com" target="_blank" class="src-link"><span>Online auctions</span><span>lucas.realauction.com ↗</span></a>
+          <a href="https://lucas.sheriffsaleauction.ohio.gov/index.cfm?zaction=AUCTION&Zmethod=PREVIEW" target="_blank" class="src-link"><span>Sheriff sale auctions</span><span>sheriffsaleauction.ohio.gov ↗</span></a>
+          <a href="https://www.toledolegalnews.com/legal_notices/foreclosure_sherrif_sales_lucas/" target="_blank" class="src-link"><span>Foreclosure notices</span><span>toledolegalnews.com ↗</span></a>
           <a href="https://co.lucas.oh.us/treasurer" target="_blank" class="src-link"><span>Tax delinquent list</span><span>Lucas Co. Treasurer ↗</span></a>
           <a href="https://www.toledolucascountylandbank.com" target="_blank" class="src-link"><span>Land Bank properties</span><span>toledolucascountylandbank.com ↗</span></a>
-          <a href="https://www.homepath.com" target="_blank" class="src-link"><span>REO / bank-owned</span><span>Fannie Mae HomePath ↗</span></a>
-          <a href="https://www.hudhomestore.gov" target="_blank" class="src-link"><span>HUD homes</span><span>hudhomestore.gov ↗</span></a>
+          <a href="https://www.amlinauctions.com" target="_blank" class="src-link"><span>Amlin Auctions</span><span>amlinauctions.com ↗</span></a>
+          <a href="https://www.pamelaroseauction.com" target="_blank" class="src-link"><span>Pamela Rose Auction</span><span>pamelaroseauction.com ↗</span></a>
         </div>
         <div class="sources-col">
           <div class="sources-col-head">DMV Area</div>
+          <a href="https://rosenberg-assoc.com/foreclosure-sales/" target="_blank" class="src-link"><span>Foreclosure auctions</span><span>Rosenberg &amp; Assoc. ↗</span></a>
+          <a href="https://taxva.com/real-estate-tax-sales/" target="_blank" class="src-link"><span>VA tax deed sales</span><span>TACS (taxva.com) ↗</span></a>
+          <a href="http://classified.washingtontimes.com/category/358/Foreclosure-Sales-FFX-Cty.html" target="_blank" class="src-link"><span>Foreclosure classifieds</span><span>Washington Times ↗</span></a>
           <a href="https://www.fairfaxcounty.gov/taxes/real-estate/tax-sale" target="_blank" class="src-link"><span>Fairfax tax sale</span><span>fairfaxcounty.gov ↗</span></a>
-          <a href="https://www.arlingtonva.us/Government/Departments/Management-Finance/Treasurer/Real-Estate-Tax-Sale" target="_blank" class="src-link"><span>Arlington tax sale</span><span>arlingtonva.us ↗</span></a>
           <a href="https://otr.cfo.dc.gov/page/tax-sale" target="_blank" class="src-link"><span>DC tax lien sale</span><span>DC OTR ↗</span></a>
           <a href="https://www.montgomerycountymd.gov/finance/tax-sale.html" target="_blank" class="src-link"><span>Montgomery Co. tax sale</span><span>montgomerycountymd.gov ↗</span></a>
-          <a href="https://valawyersweekly.com/public-notices/" target="_blank" class="src-link"><span>Trustee sale notices</span><span>VA Lawyers Weekly ↗</span></a>
-          <a href="https://icare.fairfaxcounty.gov" target="_blank" class="src-link"><span>Fairfax land records</span><span>Fairfax Circuit Ct. ↗</span></a>
         </div>
       </div>
     </details>
@@ -93,8 +94,12 @@
         <select id="fSort" class="select">
           <option value="filed">Newest first</option>
           <option value="auction">Sale date</option>
-          <option value="value">Est. value</option>
+          <option value="value">Est. value ↓</option>
           <option value="county">County</option>
+          <option value="zest_desc">Zestimate ↓ high to low</option>
+          <option value="zest_asc">Zestimate ↑ low to high</option>
+          <option value="z60_desc">60% value ↓ high to low</option>
+          <option value="z60_asc">60% value ↑ low to high</option>
         </select>
         <input id="fSearch" class="search-input" type="text" placeholder="Search address, ZIP, county…">
       </div>
@@ -105,6 +110,7 @@
         <thead>
           <tr>
             <th>Address</th>
+            <th>ZIP</th>
             <th>County</th>
             <th>Stage</th>
             <th>Filed</th>
