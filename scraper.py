@@ -154,72 +154,88 @@ def extract_sale_date_from_notice(text):
 # ── Source 1: Washington Times Classifieds ────────────────────────────────
 
 def scrape_washington_times():
-    results = []
-    total   = 0
+    results   = []
+    total     = 0
+    MAX_PAGES = 20  # safety cap per category
 
     for url, default_county, market in WT_CATEGORIES:
         print(f"[Washington Times] {default_county}...", flush=True)
-        html = fetch(url)
-        if not html:
-            continue
+        base_url  = url.replace(".html", "")  # becomes /category/358/Foreclosure-Sales-FFX-Cty
+        cat_total = 0
 
-        # Each listing: <h2><a href="LISTING_URL">TITLE</a></h2>
-        # followed by: <a href="LISTING_URL">FULL NOTICE TEXT...</a>
-        # The notice text IS the link text of the second anchor
-        listing_links = re.findall(
-            r'href="(http://classified\.washingtontimes\.com/category/\d+/[^/]+/listings/[^"]+)"[^>]*>([^<]{30,})</a>',
-            html, re.IGNORECASE
-        )
+        for page in range(1, MAX_PAGES + 1):
+            # Page 1 is the base URL, page 2+ appends /2.html etc
+            page_url = url if page == 1 else f"{base_url}/{page}.html"
+            html = fetch(page_url)
+            if not html:
+                break
 
-        count = 0
-        seen_links = set()
-        for link, notice_text in listing_links:
-            if link in seen_links:
-                continue
-            # Skip short navigation text
-            if len(notice_text) < 50:
-                continue
-            seen_links.add(link)
-            notice_text = clean(notice_text)
+            listing_links = re.findall(
+                r'href="(http://classified\.washingtontimes\.com/category/\d+/[^/]+/listings/[^"]+)"[^>]*>([^<]{30,})</a>',
+                html, re.IGNORECASE
+            )
 
-            addr = extract_address_from_notice(notice_text)
-            if not addr:
-                continue
+            page_count = 0
+            seen_links = set(r["url"] for r in results)
 
-            county = county_from_text(notice_text + " " + addr) or default_county
+            for link, notice_text in listing_links:
+                if link in seen_links or len(notice_text) < 50:
+                    continue
+                seen_links.add(link)
+                notice_text = clean(notice_text)
 
-            loan_amount = None
-            loan_m = re.search(r'principal\s+amount\s+of\s+\$?([\d,\.]+)', notice_text, re.IGNORECASE)
-            if loan_m:
-                loan_amount = extract_money("$" + loan_m.group(1))
+                addr = extract_address_from_notice(notice_text)
+                if not addr:
+                    continue
 
-            auction_date = extract_sale_date_from_notice(notice_text)
-            zip_m = re.search(r'\b(2[012]\d{3})\b', addr + " " + notice_text)
+                county = county_from_text(notice_text + " " + addr) or default_county
 
-            results.append({
-                "id":       uid(f"wt-{link}"),
-                "address":  addr[:80],
-                "zip":      zip_m.group(1) if zip_m else "",
-                "county":   county,
-                "market":   market,
-                "stage":    "Auction",
-                "filed":    TODAY,
-                "auction":  auction_date,
-                "est_value": loan_amount,
-                "source":   f"Washington Times ({default_county})",
-                "url":      link,
-                "notes":    notice_text[:300],
-                "tax_owed": None, "redemption_period": "", "tax_rate": None,
-                "scraped":  TODAY,
-            })
-            count += 1
+                loan_amount = None
+                loan_m = re.search(r'principal\s+amount\s+of\s+\$?([\d,\.]+)', notice_text, re.IGNORECASE)
+                if loan_m:
+                    loan_amount = extract_money("$" + loan_m.group(1))
 
-        print(f"  -> {count} listings", flush=True)
-        total += count
+                auction_date = extract_sale_date_from_notice(notice_text)
+                zip_m = re.search(r'\b(2[012]\d{3})\b', addr + " " + notice_text)
+
+                results.append({
+                    "id":       uid(f"wt-{link}"),
+                    "address":  addr[:80],
+                    "zip":      zip_m.group(1) if zip_m else "",
+                    "county":   county,
+                    "market":   market,
+                    "stage":    "Auction",
+                    "filed":    TODAY,
+                    "auction":  auction_date,
+                    "est_value": loan_amount,
+                    "source":   f"Washington Times ({default_county})",
+                    "url":      link,
+                    "notes":    notice_text[:300],
+                    "tax_owed": None, "redemption_period": "", "tax_rate": None,
+                    "scraped":  TODAY,
+                })
+                page_count += 1
+
+            cat_total += page_count
+
+            # Stop paginating if this page had no new listings
+            if page_count == 0:
+                break
+
+            # Check if there's a next page link in the HTML
+            has_next = bool(re.search(
+                rf'href="[^"]*/{page + 1}\.html"',
+                html, re.IGNORECASE
+            ))
+            if not has_next:
+                break
+
+        print(f"  -> {cat_total} listings ({page} page(s))", flush=True)
+        total += cat_total
 
     print(f"[Washington Times] Total: {total}", flush=True)
     return results
-
+  
 # ── Source 2: Rosenberg & Associates ──────────────────────────────────────
 
 def scrape_rosenberg():
