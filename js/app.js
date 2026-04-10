@@ -27,8 +27,8 @@ function loadUserEdits() {
 
 async function fetchListings() {
   try {
-    const url = DATA_URL + '?t=' + Math.floor(Date.now() / 60000);
-    const resp = await fetch(url);
+    const url = DATA_URL + '?t=' + Date.now();
+    const resp = await fetch(url, { cache: 'no-store' });
     if (!resp.ok) throw new Error('HTTP ' + resp.status);
     const scraped = await resp.json();
 
