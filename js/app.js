@@ -124,6 +124,8 @@ function renderTable() {
     const soonCls = r.auction && r.auction >= today ? 'date-soon' : '';
     const taxSub  = TAX_STAGES.has(r.stage) && r.tax_owed ? `<span class="addr-tax">Owed ${fmtMoney(r.tax_owed)}${r.redemption_period?' · '+r.redemption_period:''}</span>` : '';
     const linkBtn = r.url ? `<button class="act link" onclick="window.open(decodeURIComponent('${encodeURIComponent(r.url)}'),'_blank')">↗ Link</button>` : '';
+    const zest = r.zestimate ? fmtMoney(r.zestimate) : '—';
+    const z60  = r.zestimate_60pct ? fmtMoney(r.zestimate_60pct) : '—';
     return `<tr>
       <td><div class="addr-wrap"><span class="addr-main" title="${r.address}">${r.address}</span>${taxSub}</div></td>
       <td>${r.county||'—'}</td>
@@ -131,8 +133,10 @@ function renderTable() {
       <td class="date-cell">${fmtDate(r.filed)}</td>
       <td class="date-cell ${soonCls}">${fmtDate(r.auction)}</td>
       <td class="mono-cell">${fmtMoney(r.est_value)}</td>
-      <td class="mono-cell" style="color:var(--purple)">${r.tax_owed?fmtMoney(r.tax_owed):'—'}</td>
-      <td><span class="src-chip" title="${r.source||''}">${r.source||'—'}</span></td>
+      <td class="mono-cell" style="color:var(--purple)">${r.tax_owed ? fmtMoney(r.tax_owed) : '—'}</td>
+      <td class="mono-cell">${zest}</td>
+      <td class="mono-cell" style="color:var(--green)">${z60}</td>
+      <td><span class="src-chip"
       <td><div class="row-acts">${linkBtn}<button class="act" onclick="editListing('${r.id}')">Edit</button><button class="act del" onclick="deleteListing('${r.id}')">Del</button></div></td>
     </tr>`;
   }).join('');
