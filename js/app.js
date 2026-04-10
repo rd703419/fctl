@@ -1,12 +1,11 @@
 // app.js — FCTL Foreclosure + Tax Sale Tracker
-// Two-user sync via GitHub API — edits/deletions stored in data/user_edits.json
+// Two-user sync via GitHub API
 
 const STORE_KEY     = 'fctl_v2';
 const DATA_URL      = 'data/listings.json';
 const TAX_STAGES    = new Set(['Tax Lien', 'Tax Deed', 'Land Bank']);
-const POLL_INTERVAL = 120000; // poll for remote changes every 2 minutes
+const POLL_INTERVAL = 120000;
 
-// ── GitHub config ─────────────────────────────────────────────────────────────
 const GITHUB_OWNER = 'rd703419';
 const GITHUB_REPO  = 'fctl';
 const EDITS_PATH   = 'data/user_edits.json';
@@ -101,10 +100,7 @@ async function loadAndMergeRemoteEdits() {
 
 async function saveEditsToGitHub() {
   const token = getToken();
-  if (!token) {
-    setSyncStatus('No token — local only', 'amber');
-    return;
-  }
+  if (!token) { setSyncStatus('No token — local only', 'amber'); return; }
   try {
     setSyncStatus('Saving...', 'amber');
     const latest = await ghGet(EDITS_PATH);
@@ -117,8 +113,6 @@ async function saveEditsToGitHub() {
     setSyncStatus('Sync failed — saved locally', 'red');
   }
 }
-
-// ── Poll for remote changes every 2 minutes ───────────────────────────────────
 
 async function pollRemoteChanges() {
   const data = await ghGet(EDITS_PATH);
@@ -139,7 +133,6 @@ async function pollRemoteChanges() {
 
 async function init() {
   githubToken = localStorage.getItem('fctl_gh_token') || null;
-
   try {
     const raw = localStorage.getItem(STORE_KEY);
     userEdits = raw ? JSON.parse(raw) : {};
@@ -150,16 +143,13 @@ async function init() {
   render();
   setupListeners();
 
-  if (!githubToken) {
-    setSyncStatus('No token — read-only sync', 'amber');
-  } else {
-    setSyncStatus('Sync ready', 'green');
-  }
+  setSyncStatus(githubToken ? 'Sync ready' : 'No token — read-only sync',
+                githubToken ? 'green' : 'amber');
 
   setInterval(pollRemoteChanges, POLL_INTERVAL);
 }
 
-// ── Fetch scraped listings ────────────────────────────────────────────────────
+// ── Fetch listings ────────────────────────────────────────────────────────────
 
 async function fetchListings() {
   try {
@@ -170,13 +160,11 @@ async function fetchListings() {
 
     const byId = {};
     scraped.forEach(r => { byId[r.id] = r; });
-
     Object.entries(userEdits).forEach(([id, edits]) => {
       if (edits._deleted) return;
       if (byId[id]) byId[id] = { ...byId[id], ...edits };
       else byId[id] = edits;
     });
-
     listings = Object.values(byId).filter(r => !userEdits[r.id]?._deleted);
 
     const el = document.getElementById('lastScraped');
@@ -188,7 +176,7 @@ async function fetchListings() {
   }
 }
 
-// ── Save (local + GitHub) ─────────────────────────────────────────────────────
+// ── Save ──────────────────────────────────────────────────────────────────────
 
 async function saveUserEdits() {
   localStorage.setItem(STORE_KEY, JSON.stringify(userEdits));
@@ -221,7 +209,7 @@ function stageBadge(s) {
   return `<span class="badge b-${map[s]||'filing'}">${s}</span>`;
 }
 
-// ── Filtering ─────────────────────────────────────────────────────────────────
+// ── Filtering + Sorting ───────────────────────────────────────────────────────
 
 function getFiltered() {
   const stage  = document.getElementById('fStage').value;
@@ -241,20 +229,38 @@ function getFiltered() {
     return true;
   });
 
-  if (sort === 'auction') {
-    rows.sort((a,b) => {
-      if (!a.auction && !b.auction) return 0;
-      if (!a.auction) return 1;
-      if (!b.auction) return -1;
-      return a.auction.localeCompare(b.auction);
-    });
-  } else if (sort === 'value') {
-    rows.sort((a,b) => (b.est_value||0)-(a.est_value||0));
-  } else if (sort === 'county') {
-    rows.sort((a,b) => (a.county||'').localeCompare(b.county||''));
-  } else {
-    rows.sort((a,b) => (b.filed||'').localeCompare(a.filed||''));
+  // Sorting
+  switch (sort) {
+    case 'auction':
+      rows.sort((a,b) => {
+        if (!a.auction && !b.auction) return 0;
+        if (!a.auction) return 1;
+        if (!b.auction) return -1;
+        return a.auction.localeCompare(b.auction);
+      });
+      break;
+    case 'value':
+      rows.sort((a,b) => (b.est_value||0)-(a.est_value||0));
+      break;
+    case 'county':
+      rows.sort((a,b) => (a.county||'').localeCompare(b.county||''));
+      break;
+    case 'zest_desc':
+      rows.sort((a,b) => (b.zestimate||0)-(a.zestimate||0));
+      break;
+    case 'zest_asc':
+      rows.sort((a,b) => (a.zestimate||0)-(b.zestimate||0));
+      break;
+    case 'z60_desc':
+      rows.sort((a,b) => (b.zestimate_60pct||0)-(a.zestimate_60pct||0));
+      break;
+    case 'z60_asc':
+      rows.sort((a,b) => (a.zestimate_60pct||0)-(b.zestimate_60pct||0));
+      break;
+    default:
+      rows.sort((a,b) => (b.filed||'').localeCompare(a.filed||''));
   }
+
   return rows;
 }
 
@@ -266,12 +272,12 @@ function renderMetrics() {
   const fcR      = listings.filter(r => !TAX_STAGES.has(r.stage));
   const upcoming = listings.filter(r => r.auction && r.auction >= today);
   const cards = [
-    { lbl:'Total listings',   val:listings.length,                                     cls:'',       accent:'' },
-    { lbl:'Foreclosures',     val:fcR.length,                                          cls:'blue',   accent:'blue' },
-    { lbl:'Tax sales',        val:taxR.length,                                         cls:'purple', accent:'purple' },
-    { lbl:'Upcoming sales',   val:upcoming.length,                                     cls:'amber',  accent:'amber' },
-    { lbl:'REO / bank-owned', val:listings.filter(r=>r.stage==='REO').length,          cls:'red',    accent:'red' },
-    { lbl:'Land bank',        val:listings.filter(r=>r.stage==='Land Bank').length,    cls:'green',  accent:'green' },
+    { lbl:'Total listings',   val:listings.length,                                    cls:'',       accent:'' },
+    { lbl:'Foreclosures',     val:fcR.length,                                         cls:'blue',   accent:'blue' },
+    { lbl:'Tax sales',        val:taxR.length,                                        cls:'purple', accent:'purple' },
+    { lbl:'Upcoming sales',   val:upcoming.length,                                    cls:'amber',  accent:'amber' },
+    { lbl:'REO / bank-owned', val:listings.filter(r=>r.stage==='REO').length,         cls:'red',    accent:'red' },
+    { lbl:'Land bank',        val:listings.filter(r=>r.stage==='Land Bank').length,   cls:'green',  accent:'green' },
   ];
   document.getElementById('metricsRow').innerHTML = cards.map(c=>`
     <div class="metric" data-accent="${c.accent}">
@@ -287,7 +293,7 @@ function renderTable() {
 
   if (!rows.length) {
     document.getElementById('tbody').innerHTML =
-      '<tr><td colspan="11" class="empty">No listings match your filters.</td></tr>';
+      '<tr><td colspan="12" class="empty">No listings match your filters.</td></tr>';
     return;
   }
 
@@ -304,6 +310,7 @@ function renderTable() {
 
     return `<tr>
       <td><div class="addr-wrap"><span class="addr-main" title="${r.address}">${r.address}</span>${taxSub}</div></td>
+      <td class="mono-cell" style="font-size:12px;color:var(--t2)">${r.zip||'—'}</td>
       <td>${r.county||'—'}</td>
       <td>${stageBadge(r.stage)}</td>
       <td class="date-cell">${fmtDate(r.filed)}</td>
@@ -478,8 +485,6 @@ function exportCSV() {
   a.click();
 }
 
-// ── Token setup ───────────────────────────────────────────────────────────────
-
 function setupToken() {
   const t = window.prompt(
     'Enter your GitHub Personal Access Token.\n\n' +
@@ -498,5 +503,4 @@ function setupToken() {
 }
 
 // ── Boot ──────────────────────────────────────────────────────────────────────
-
 init();
