@@ -313,7 +313,6 @@ function renderTable() {
       <td>${stageBadge(r.stage)}</td>
       <td class="date-cell ${soonCls}">${fmtDate(r.auction)}</td>
       <td class="mono-cell">${fmtMoney(r.est_value)}</td>
-      <td class="mono-cell">${fmtMoney(r.est_value)}</td>
       <td class="mono-cell" style="color:var(--blue)">${r.est_value ? fmtMoney(Math.round(r.est_value * 0.60)) : '—'}</td>
       <td class="mono-cell">${zest}</td>
       <td class="mono-cell" style="color:var(--green)">${z60}</td>
