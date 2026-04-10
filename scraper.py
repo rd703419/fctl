@@ -17,7 +17,7 @@ Lucas County Sources:
   - Lucas Co. Sheriff RealAuction (fallback attempt)
 """
 
-import json, re, os, sys, hashlib
+import json, re, os, sys, hashlib, time, urllib.parse
 from datetime import datetime, timedelta
 from urllib.request import urlopen, Request
 from urllib.error import URLError, HTTPError
@@ -675,7 +675,108 @@ def merge(existing, incoming):
 
 
 # ── Main ───────────────────────────────────────────────────────────────────
+# ── Zillow Zestimate lookup ────────────────────────────────────────────────
 
+import time
+import urllib.parse
+
+def get_zillow_zestimate(address, zip_code):
+    """
+    Looks up a Zillow Zestimate for a given address.
+    Uses Zillow's suggest/autocomplete endpoint which returns
+    property data without triggering bot detection.
+    Returns (zestimate, sixty_pct) or (None, None) if not found.
+    """
+    if not address:
+        return None, None
+
+    # Clean address for search — remove unit numbers and excess text
+    search_addr = re.sub(r'\s+(UNIT|APT|#|STE|SUITE)\s*[\w\-]+', '', address, flags=re.IGNORECASE)
+    search_addr = re.sub(r',.*$', '', search_addr).strip()
+    if zip_code:
+        query = f"{search_addr} {zip_code}"
+    else:
+        query = search_addr
+
+    encoded = urllib.parse.quote(query)
+    url = f"https://www.zillow.com/search/GetSearchPageState.htm?searchQueryState=%7B%22usersSearchTerm%22%3A%22{encoded}%22%7D&wants=%7B%22cat1%22%3A%5B%22mapResults%22%5D%7D&requestId=1"
+
+    try:
+        time.sleep(1.5)  # polite delay between requests
+        html = fetch(url, timeout=15)
+        if not html:
+            return None, None
+
+        # Try to parse JSON response
+        data = json.loads(html)
+        props = (data.get("cat1", {})
+                     .get("searchResults", {})
+                     .get("mapResults", []))
+
+        for prop in props[:3]:
+            zest = (prop.get("hdpData", {})
+                        .get("homeInfo", {})
+                        .get("zestimate"))
+            if zest:
+                zestimate = int(zest)
+                sixty_pct = int(zestimate * 0.60)
+                return zestimate, sixty_pct
+
+    except (json.JSONDecodeError, KeyError, TypeError):
+        pass
+
+    # Fallback: try Zillow's suggest API
+    try:
+        suggest_url = f"https://www.zillow.com/homes/{urllib.parse.quote(query)}_rb/"
+        time.sleep(1.5)
+        html = fetch(suggest_url, timeout=15)
+        if html:
+            # Look for Zestimate in page JSON data
+            zest_m = re.search(r'"zestimate"\s*:\s*(\d+)', html)
+            if zest_m:
+                zestimate = int(zest_m.group(1))
+                sixty_pct = int(zestimate * 0.60)
+                return zestimate, sixty_pct
+    except Exception:
+        pass
+
+    return None, None
+
+
+def enrich_with_zestimates(listings):
+    """
+    Adds zestimate and zestimate_60pct fields to each listing.
+    Only looks up listings that don't already have a zestimate.
+    Skips placeholder addresses like 'Multiple properties —'.
+    """
+    to_lookup = [
+        r for r in listings
+        if not r.get("zestimate")
+        and r.get("address")
+        and not r["address"].startswith("Multiple properties")
+        and not r["address"].startswith("See listing")
+    ]
+
+    print(f"[Zillow] Looking up {len(to_lookup)} addresses...", flush=True)
+    found = 0
+
+    for i, r in enumerate(to_lookup):
+        zest, sixty = get_zillow_zestimate(r["address"], r.get("zip", ""))
+        r["zestimate"]     = zest
+        r["zestimate_60pct"] = sixty
+        if zest:
+            found += 1
+        # Progress update every 10 lookups
+        if (i + 1) % 10 == 0:
+            print(f"  [{i+1}/{len(to_lookup)}] {found} found so far...", flush=True)
+
+    # Make sure all listings have the fields even if not looked up
+    for r in listings:
+        r.setdefault("zestimate", None)
+        r.setdefault("zestimate_60pct", None)
+
+    print(f"[Zillow] Done — {found}/{len(to_lookup)} zestimates found", flush=True)
+    return listings
 def main():
     print(f"Scraper starting — {TODAY}", flush=True)
     os.makedirs("data", exist_ok=True)
@@ -699,9 +800,13 @@ def main():
         except Exception as e:
             print(f"  [{scraper.__name__}] ERROR: {e}", file=sys.stderr)
 
-    incoming = deduplicate(incoming)
+incoming = deduplicate(incoming)
     existing = load_existing()
     merged   = merge(existing, incoming)
+
+    # Enrich with Zillow Zestimates
+    merged = enrich_with_zestimates(merged)
+
     merged.sort(key=lambda r: r.get("filed") or "", reverse=True)
 
     with open(OUTPUT_FILE, "w") as f:
