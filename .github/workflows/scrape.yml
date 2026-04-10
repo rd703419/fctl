@@ -22,7 +22,7 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: pip install homeharvest
+        run: pip install homeharvest requests
 
       - name: Run scraper
         run: python scraper.py
