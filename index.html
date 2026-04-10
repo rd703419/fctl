@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FCTL — Foreclosure & Tax Sale Tracker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="app">
+
+  <header class="header">
+    <div class="header-inner">
+      <div class="brand">
+        <span class="brand-mark">FCTL</span>
+        <div class="brand-text">
+          <span class="brand-name">Foreclosure &amp; Tax Sale Tracker</span>
+          <span class="brand-sub">Lucas County OH &nbsp;·&nbsp; DMV Area</span>
+        </div>
+      </div>
+      <div class="header-right">
+        <span class="sync-status" id="syncStatus"></span>
+        <div class="header-btns">
+          <button class="btn ghost" onclick="openImport()">Import</button>
+          <button class="btn ghost" onclick="exportCSV()">Export</button>
+          <button class="btn primary" onclick="openAdd()">+ Add</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="main">
+
+    <div class="metrics-row" id="metricsRow"></div>
+
+    <details class="sources">
+      <summary class="sources-summary">
+        <span class="sources-label">Source directory</span>
+        <span class="sources-toggle"></span>
+      </summary>
+      <div class="sources-grid">
+        <div class="sources-col">
+          <div class="sources-col-head">Lucas County, OH</div>
+          <a href="https://www.lucascountysheriff.org/civil/sheriff-sales" target="_blank" class="src-link"><span>Sheriff sales</span><span>lucascountysheriff.org ↗</span></a>
+          <a href="https://lucas.realauction.com" target="_blank" class="src-link"><span>Online auctions</span><span>lucas.realauction.com ↗</span></a>
+          <a href="https://co.lucas.oh.us/treasurer" target="_blank" class="src-link"><span>Tax delinquent list</span><span>Lucas Co. Treasurer ↗</span></a>
+          <a href="https://www.toledolucascountylandbank.com" target="_blank" class="src-link"><span>Land Bank properties</span><span>toledolucascountylandbank.com ↗</span></a>
+          <a href="https://www.homepath.com" target="_blank" class="src-link"><span>REO / bank-owned</span><span>Fannie Mae HomePath ↗</span></a>
+          <a href="https://www.hudhomestore.gov" target="_blank" class="src-link"><span>HUD homes</span><span>hudhomestore.gov ↗</span></a>
+        </div>
+        <div class="sources-col">
+          <div class="sources-col-head">DMV Area</div>
+          <a href="https://www.fairfaxcounty.gov/taxes/real-estate/tax-sale" target="_blank" class="src-link"><span>Fairfax tax sale</span><span>fairfaxcounty.gov ↗</span></a>
+          <a href="https://www.arlingtonva.us/Government/Departments/Management-Finance/Treasurer/Real-Estate-Tax-Sale" target="_blank" class="src-link"><span>Arlington tax sale</span><span>arlingtonva.us ↗</span></a>
+          <a href="https://otr.cfo.dc.gov/page/tax-sale" target="_blank" class="src-link"><span>DC tax lien sale</span><span>DC OTR ↗</span></a>
+          <a href="https://www.montgomerycountymd.gov/finance/tax-sale.html" target="_blank" class="src-link"><span>Montgomery Co. tax sale</span><span>montgomerycountymd.gov ↗</span></a>
+          <a href="https://valawyersweekly.com/public-notices/" target="_blank" class="src-link"><span>Trustee sale notices</span><span>VA Lawyers Weekly ↗</span></a>
+          <a href="https://icare.fairfaxcounty.gov" target="_blank" class="src-link"><span>Fairfax land records</span><span>Fairfax Circuit Ct. ↗</span></a>
+        </div>
+      </div>
+    </details>
+
+    <div class="toolbar">
+      <div class="market-tabs" id="marketTabs">
+        <button class="mtab active" data-market="all">All markets</button>
+        <button class="mtab" data-market="lucas">Lucas County</button>
+        <button class="mtab" data-market="dmv">DMV Area</button>
+      </div>
+      <div class="filter-row">
+        <select id="fStage" class="select">
+          <option value="">All stages</option>
+          <optgroup label="Foreclosure">
+            <option>Pre-Foreclosure</option>
+            <option>Filing</option>
+            <option>Auction</option>
+            <option>REO</option>
+          </optgroup>
+          <optgroup label="Tax Sale">
+            <option value="Tax Lien">Tax Lien</option>
+            <option value="Tax Deed">Tax Deed</option>
+            <option value="Land Bank">Land Bank</option>
+          </optgroup>
+        </select>
+        <select id="fType" class="select">
+          <option value="">All types</option>
+          <option value="foreclosure">Foreclosure only</option>
+          <option value="tax">Tax sale only</option>
+        </select>
+        <select id="fSort" class="select">
+          <option value="filed">Newest first</option>
+          <option value="auction">Sale date</option>
+          <option value="value">Est. value</option>
+          <option value="county">County</option>
+        </select>
+        <input id="fSearch" class="search-input" type="text" placeholder="Search address, ZIP, county…">
+      </div>
+    </div>
+
+    <div class="table-outer">
+      <table class="table" id="mainTable">
+        <thead>
+          <tr>
+            <th>Address</th>
+            <th>County</th>
+            <th>Stage</th>
+            <th>Filed</th>
+            <th>Sale date</th>
+            <th>Est. value</th>
+            <th>Tax owed</th>
+            <th>Source</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+
+    <div class="table-foot">
+      <span class="foot-count" id="rowCount"></span>
+      <span class="foot-save" id="savedAt"></span>
+    </div>
+
+  </main>
+
+</div><!-- .app -->
+
+<!-- Add/Edit modal -->
+<div class="overlay" id="addModal">
+  <div class="modal">
+    <div class="modal-hd">
+      <h2 class="modal-title" id="modalTitle">Add listing</h2>
+      <button class="modal-x" onclick="closeModal()">&times;</button>
+    </div>
+    <div class="modal-bd">
+      <div class="fg fg-2-1">
+        <div class="field"><label>Address <span class="req">*</span></label><input id="fAddress" type="text" placeholder="123 Main St"></div>
+        <div class="field"><label>ZIP</label><input id="fZip" type="text" maxlength="5" placeholder="43604"></div>
+      </div>
+      <div class="fg fg-2">
+        <div class="field"><label>County</label><input id="fCounty" type="text" placeholder="Lucas, Fairfax, Arlington…"></div>
+        <div class="field"><label>Market</label>
+          <select id="fMarket"><option value="lucas">Lucas County</option><option value="dmv">DMV Area</option></select>
+        </div>
+      </div>
+      <div class="fg fg-2">
+        <div class="field"><label>Stage</label>
+          <select id="fStageIn">
+            <optgroup label="Foreclosure"><option>Pre-Foreclosure</option><option>Filing</option><option>Auction</option><option>REO</option></optgroup>
+            <optgroup label="Tax Sale"><option value="Tax Lien">Tax Lien</option><option value="Tax Deed">Tax Deed</option><option value="Land Bank">Land Bank</option></optgroup>
+          </select>
+        </div>
+        <div class="field"><label>Source</label><input id="fSource" type="text" placeholder="Lucas Co. Sheriff, DC OTR…"></div>
+      </div>
+
+      <div class="tax-section" id="taxSection">
+        <div class="section-label">Tax sale details</div>
+        <div class="fg fg-3">
+          <div class="field"><label>Tax owed ($)</label><input id="fTaxOwed" type="number" placeholder="4200"></div>
+          <div class="field"><label>Redemption period</label><input id="fRedemption" type="text" placeholder="1 year, 6 mo…"></div>
+          <div class="field"><label>Interest rate (%)</label><input id="fTaxRate" type="number" placeholder="18"></div>
+        </div>
+      </div>
+
+      <div class="section-label">Dates &amp; value</div>
+      <div class="fg fg-3">
+        <div class="field"><label>Date filed / listed</label><input id="fFiled" type="date"></div>
+        <div class="field"><label>Sale / auction date</label><input id="fAuction" type="date"></div>
+        <div class="field"><label>Est. value ($)</label><input id="fValue" type="number" placeholder="85000"></div>
+      </div>
+      <div class="field"><label>URL / case # / parcel ID</label><input id="fUrl" type="text" placeholder="https://… or case number"></div>
+      <div class="field"><label>Notes</label><textarea id="fNotes" placeholder="IRS liens, redemption status, condition, contacts…"></textarea></div>
+    </div>
+    <div class="modal-ft">
+      <button class="btn ghost" onclick="closeModal()">Cancel</button>
+      <button class="btn primary" onclick="saveListing()">Save listing</button>
+    </div>
+  </div>
+</div>
+
+<!-- Import modal -->
+<div class="overlay" id="importModal">
+  <div class="modal">
+    <div class="modal-hd">
+      <h2 class="modal-title">Import CSV</h2>
+      <button class="modal-x" onclick="closeImport()">&times;</button>
+    </div>
+    <div class="modal-bd">
+      <div class="field">
+        <label>Paste CSV rows or drag a .csv file onto the page</label>
+        <textarea id="importText" class="import-ta" placeholder="address,zip,county,market,stage,filed,auction,est_value,source,url,notes,tax_owed,redemption_period,tax_rate&#10;4821 Secor Rd,43623,Lucas,lucas,Auction,2025-10-14,2026-04-18,87000,Lucas Co. Sheriff,,,,,"></textarea>
+      </div>
+      <p class="hint">Columns: address, zip, county, market (lucas/dmv), stage, filed (YYYY-MM-DD), auction, est_value, source, url, notes, tax_owed, redemption_period, tax_rate</p>
+    </div>
+    <div class="modal-ft">
+      <button class="btn ghost" onclick="closeImport()">Cancel</button>
+      <button class="btn primary" onclick="doImport()">Import</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/app.js"></script>
+</body>
+</html>
