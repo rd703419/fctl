@@ -239,7 +239,7 @@ function getFiltered() {
         return a.auction.localeCompare(b.auction);
       });
       break;
-    case 'value':
+    case 'minbid':
       rows.sort((a,b) => (b.est_value||0)-(a.est_value||0));
       break;
     case 'county':
@@ -299,9 +299,7 @@ function renderTable() {
 
   document.getElementById('tbody').innerHTML = rows.map(r => {
     const soonCls = r.auction && r.auction >= today ? 'date-soon' : '';
-    const taxSub  = TAX_STAGES.has(r.stage) && r.tax_owed
-      ? `<span class="addr-tax">Owed ${fmtMoney(r.tax_owed)}${r.redemption_period?' · '+r.redemption_period:''}</span>`
-      : '';
+    const taxSub = '';
     const linkBtn = r.url
       ? `<button class="act link" onclick="window.open(decodeURIComponent('${encodeURIComponent(r.url)}'),'_blank')">↗ Link</button>`
       : '';
@@ -313,10 +311,10 @@ function renderTable() {
       <td class="mono-cell" style="font-size:12px;color:var(--t2)">${r.zip||'—'}</td>
       <td>${r.county||'—'}</td>
       <td>${stageBadge(r.stage)}</td>
-      <td class="date-cell">${fmtDate(r.filed)}</td>
       <td class="date-cell ${soonCls}">${fmtDate(r.auction)}</td>
       <td class="mono-cell">${fmtMoney(r.est_value)}</td>
-      <td class="mono-cell" style="color:var(--purple)">${r.tax_owed?fmtMoney(r.tax_owed):'—'}</td>
+      <td class="mono-cell">${fmtMoney(r.est_value)}</td>
+      <td class="mono-cell" style="color:var(--blue)">${r.est_value ? fmtMoney(Math.round(r.est_value * 0.60)) : '—'}</td>
       <td class="mono-cell">${zest}</td>
       <td class="mono-cell" style="color:var(--green)">${z60}</td>
       <td><span class="src-chip" title="${r.source||''}">${r.source||'—'}</span></td>
