@@ -60,6 +60,26 @@
     "scraped": "2026-04-13"
   },
   {
+    "id": "sc-76635050bd",
+    "address": "813 51ST STREET NE, WASHINGTON, DC 20019",
+    "zip": "20019",
+    "county": "DC",
+    "market": "dmv",
+    "stage": "Auction",
+    "filed": "2026-04-13",
+    "auction": "2026-05-20",
+    "est_value": 150000,
+    "source": "Rosenberg & Assoc.",
+    "url": "https://rosenberg-assoc.com/foreclosure-sales/",
+    "notes": "Case: 23-001393-DC-F-1. Deposit: $ 15,000",
+    "tax_owed": null,
+    "redemption_period": "",
+    "tax_rate": null,
+    "zestimate": 195100,
+    "zestimate_60pct": 117060,
+    "scraped": "2026-04-13"
+  },
+  {
     "id": "sc-2c772ff2e5",
     "address": "Multiple properties \u2014 Falls Chu",
     "zip": "",
@@ -956,8 +976,8 @@
     "redemption_period": "",
     "tax_rate": null,
     "scraped": "2026-04-13",
-    "zestimate": null,
-    "zestimate_60pct": null
+    "zestimate": 717765,
+    "zestimate_60pct": 430659
   },
   {
     "id": "sc-bc6a42958b",
