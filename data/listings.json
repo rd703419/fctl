@@ -80,6 +80,26 @@
     "scraped": "2026-04-14"
   },
   {
+    "id": "sc-5f226875f2",
+    "address": "8805 STONERIDGE CIRCLE UNIT: 104, BALTIMORE, MD 21208",
+    "zip": "21208",
+    "county": "Baltimore",
+    "market": "dmv",
+    "stage": "Auction",
+    "filed": "2026-04-14",
+    "auction": "2026-05-14",
+    "est_value": 100000,
+    "source": "Rosenberg & Assoc.",
+    "url": "https://rosenberg-assoc.com/foreclosure-sales/",
+    "notes": "Case: 22-000380-MD-F-4. Deposit: $ 10,000",
+    "tax_owed": null,
+    "redemption_period": "",
+    "tax_rate": null,
+    "zestimate": 1358000,
+    "zestimate_60pct": 814800,
+    "scraped": "2026-04-14"
+  },
+  {
     "id": "sc-b4d01dfdad",
     "address": "Multiple properties \u2014 Falls Chu",
     "zip": "",
