@@ -40,6 +40,26 @@
     "scraped": "2026-04-17"
   },
   {
+    "id": "sc-06e17874eb",
+    "address": "5622 RUDYARD RD, SYLVANIA",
+    "zip": "",
+    "county": "Lucas",
+    "market": "lucas",
+    "stage": "Auction",
+    "filed": "2026-04-17",
+    "auction": "2026-05-19",
+    "est_value": 99000,
+    "source": "Amlin Auctions",
+    "url": "https://www.amlinauctions.com/auctions/detail/bw160654",
+    "notes": "MINIMUM BID AUCTION $99,000! 5622 Rudyard Rd",
+    "tax_owed": null,
+    "redemption_period": "",
+    "tax_rate": null,
+    "zestimate": 126100,
+    "zestimate_60pct": 75660,
+    "scraped": "2026-04-17"
+  },
+  {
     "id": "sc-ff438befd0",
     "address": "Multiple properties \u2014 Falls Chu",
     "zip": "",
