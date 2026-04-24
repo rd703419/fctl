@@ -60,6 +60,26 @@
     "scraped": "2026-04-24"
   },
   {
+    "id": "sc-720597a2cc",
+    "address": "7220 JESSICA LANE, PRINCE GEORGE, VA 23875",
+    "zip": "23875",
+    "county": "Prince George's MD",
+    "market": "dmv",
+    "stage": "Auction",
+    "filed": "2026-04-24",
+    "auction": "2026-06-25",
+    "est_value": 200000,
+    "source": "Rosenberg & Assoc.",
+    "url": "https://rosenberg-assoc.com/foreclosure-sales/",
+    "notes": "Case: 22-001141-VA-F-2. Deposit: $ 20,000",
+    "tax_owed": null,
+    "redemption_period": "",
+    "tax_rate": null,
+    "zestimate": 346000,
+    "zestimate_60pct": 207600,
+    "scraped": "2026-04-24"
+  },
+  {
     "id": "sc-35bd017d8a",
     "address": "Multiple properties \u2014 Falls Chu",
     "zip": "",
