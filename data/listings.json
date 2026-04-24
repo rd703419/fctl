@@ -40,6 +40,26 @@
     "scraped": "2026-04-24"
   },
   {
+    "id": "sc-e7a660844b",
+    "address": "31150 REDEEMED 878697 REDEEMED 9023 CENTREVILLE RD. REDEEMED",
+    "zip": "",
+    "county": "Manassas",
+    "market": "dmv",
+    "stage": "Tax Deed",
+    "filed": "2026-04-24",
+    "auction": "2026-04-24",
+    "est_value": null,
+    "source": "TACS (taxva.com)",
+    "url": "https://taxva.com/rs-tax-sales/city-of-manassas-real-estate-tax-sales/",
+    "notes": "VA tax deed sale \u2014 Manassas",
+    "tax_owed": null,
+    "redemption_period": "",
+    "tax_rate": null,
+    "zestimate": null,
+    "zestimate_60pct": null,
+    "scraped": "2026-04-24"
+  },
+  {
     "id": "sc-35bd017d8a",
     "address": "Multiple properties \u2014 Falls Chu",
     "zip": "",
