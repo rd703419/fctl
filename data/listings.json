@@ -40,6 +40,26 @@
     "scraped": "2026-04-30"
   },
   {
+    "id": "sc-b3a84ece9a",
+    "address": "4724 BENNING ROAD SE APT 202, WASHINGTON, DC 20019",
+    "zip": "20019",
+    "county": "DC",
+    "market": "dmv",
+    "stage": "Auction",
+    "filed": "2026-04-30",
+    "auction": "2026-06-17",
+    "est_value": 110000,
+    "source": "Rosenberg & Assoc.",
+    "url": "https://rosenberg-assoc.com/foreclosure-sales/",
+    "notes": "Case: 22-003302-DC-F-1. Deposit: $ 11,000",
+    "tax_owed": null,
+    "redemption_period": "",
+    "tax_rate": null,
+    "zestimate": 263200,
+    "zestimate_60pct": 157920,
+    "scraped": "2026-04-30"
+  },
+  {
     "id": "sc-11890502ab",
     "address": "Multiple properties \u2014 Falls Chu",
     "zip": "",
