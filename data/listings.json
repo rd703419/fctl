@@ -60,6 +60,26 @@
     "scraped": "2026-05-14"
   },
   {
+    "id": "sc-6c542141cc",
+    "address": "41823 BRISTOW MANOR DRIVE, ASHBURN, VA 20148",
+    "zip": "20148",
+    "county": "Loudoun",
+    "market": "dmv",
+    "stage": "Auction",
+    "filed": "2026-05-14",
+    "auction": "2026-07-20",
+    "est_value": 200000,
+    "source": "Rosenberg & Assoc.",
+    "url": "https://rosenberg-assoc.com/foreclosure-sales/",
+    "notes": "Case: 26-005274-VA-F-1. Deposit: $ 20,000",
+    "tax_owed": null,
+    "redemption_period": "",
+    "tax_rate": null,
+    "zestimate": 772200,
+    "zestimate_60pct": 463320,
+    "scraped": "2026-05-14"
+  },
+  {
     "id": "sc-3af7f6db28",
     "address": "Multiple properties \u2014 Falls Chu",
     "zip": "",
