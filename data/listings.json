@@ -40,6 +40,26 @@
     "scraped": "2026-05-14"
   },
   {
+    "id": "sc-aa045bc04e",
+    "address": "6905 WOODSTREAM TURN, LANHAM, MD 20706",
+    "zip": "20706",
+    "county": "Prince George's MD",
+    "market": "dmv",
+    "stage": "Auction",
+    "filed": "2026-05-14",
+    "auction": "2026-06-16",
+    "est_value": 200000,
+    "source": "Rosenberg & Assoc.",
+    "url": "https://rosenberg-assoc.com/foreclosure-sales/",
+    "notes": "Case: 24-002939-MD-F-1. Deposit: $ 20,000",
+    "tax_owed": null,
+    "redemption_period": "",
+    "tax_rate": null,
+    "zestimate": 437026,
+    "zestimate_60pct": 262215,
+    "scraped": "2026-05-14"
+  },
+  {
     "id": "sc-3af7f6db28",
     "address": "Multiple properties \u2014 Falls Chu",
     "zip": "",
