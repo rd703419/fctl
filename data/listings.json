@@ -60,6 +60,26 @@
     "scraped": "2026-05-22"
   },
   {
+    "id": "sc-c18231b53d",
+    "address": "341 BOSTON PL, TOLEDO",
+    "zip": "43610",
+    "county": "Lucas",
+    "market": "lucas",
+    "stage": "Auction",
+    "filed": "2026-05-22",
+    "auction": "2026-06-22",
+    "est_value": 39000,
+    "source": "Amlin Auctions",
+    "url": "https://www.amlinauctions.com/auctions/detail/bw162775",
+    "notes": "MINIMUM BID AUCTION $39,000! 341 Boston Pl",
+    "tax_owed": null,
+    "redemption_period": "",
+    "tax_rate": null,
+    "zestimate": 63700,
+    "zestimate_60pct": 38220,
+    "scraped": "2026-05-22"
+  },
+  {
     "id": "sc-a3b9fcaf84",
     "address": "11725 LONG SHADOW LANE, LUSBY, MD 20657",
     "zip": "20657",
