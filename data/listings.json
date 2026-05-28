@@ -3175,8 +3175,8 @@
     "tax_owed": null,
     "redemption_period": "",
     "tax_rate": null,
-    "zestimate": null,
-    "zestimate_60pct": null,
+    "zestimate": 342000,
+    "zestimate_60pct": 205200,
     "scraped": "2026-04-20"
   },
   {
