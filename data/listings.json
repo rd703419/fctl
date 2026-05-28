@@ -40,6 +40,26 @@
     "scraped": "2026-05-28"
   },
   {
+    "id": "sc-e1665a5ed3",
+    "address": "12845 INDEPENDENCE ROAD, CLEAR SPRING, MD 21722",
+    "zip": "21722",
+    "county": "DC",
+    "market": "dmv",
+    "stage": "Auction",
+    "filed": "2026-05-28",
+    "auction": "2026-07-10",
+    "est_value": 300000,
+    "source": "Rosenberg & Assoc.",
+    "url": "https://rosenberg-assoc.com/foreclosure-sales/",
+    "notes": "Case: 23-001301-MD-F-1. Deposit: $ 30,000",
+    "tax_owed": null,
+    "redemption_period": "",
+    "tax_rate": null,
+    "zestimate": 594608,
+    "zestimate_60pct": 356764,
+    "scraped": "2026-05-28"
+  },
+  {
     "id": "sc-67dceb6735",
     "address": "Multiple properties \u2014 Falls Chu",
     "zip": "",
