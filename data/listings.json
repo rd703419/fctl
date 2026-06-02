@@ -5847,7 +5847,7 @@
     "market": "lucas",
     "stage": "Auction",
     "filed": "2026-04-10",
-    "auction": "2026-05-27",
+    "auction": "2026-06-17",
     "est_value": null,
     "source": "Amlin Auctions",
     "url": "https://www.amlinauctions.com/auctions/detail/bw160244",
@@ -5855,7 +5855,7 @@
     "tax_owed": null,
     "redemption_period": "",
     "tax_rate": null,
-    "scraped": "2026-05-22",
+    "scraped": "2026-06-02",
     "zestimate": 168347,
     "zestimate_60pct": 101008
   },
