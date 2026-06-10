@@ -60,6 +60,26 @@
     "scraped": "2026-06-10"
   },
   {
+    "id": "sc-ecb3195b1b",
+    "address": "9306 VAN BUREN STREET, LANHAM, MD 20706",
+    "zip": "20706",
+    "county": "Prince George's MD",
+    "market": "dmv",
+    "stage": "Auction",
+    "filed": "2026-06-10",
+    "auction": "2026-07-14",
+    "est_value": 300000,
+    "source": "Rosenberg & Assoc.",
+    "url": "https://rosenberg-assoc.com/foreclosure-sales/",
+    "notes": "Case: 25-003853-MD-F-1. Deposit: $ 30,000",
+    "tax_owed": null,
+    "redemption_period": "",
+    "tax_rate": null,
+    "zestimate": 356000,
+    "zestimate_60pct": 213600,
+    "scraped": "2026-06-10"
+  },
+  {
     "id": "sc-488632f0af",
     "address": "Multiple properties \u2014 Falls Chu",
     "zip": "",
