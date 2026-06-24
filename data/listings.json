@@ -20,6 +20,26 @@
     "scraped": "2026-06-24"
   },
   {
+    "id": "sc-240f44b5d6",
+    "address": "8534 CENTRAL AVE",
+    "zip": "",
+    "county": "Lucas",
+    "market": "lucas",
+    "stage": "Auction",
+    "filed": "2026-06-24",
+    "auction": "2026-07-22",
+    "est_value": null,
+    "source": "Amlin Auctions",
+    "url": "https://www.amlinauctions.com/auctions/detail/bw164635",
+    "notes": "MULTI-LOCATION STORAGE AUCTIONS!",
+    "tax_owed": null,
+    "redemption_period": "",
+    "tax_rate": null,
+    "zestimate": null,
+    "zestimate_60pct": null,
+    "scraped": "2026-06-24"
+  },
+  {
     "id": "sc-e189f3357d",
     "address": "Multiple properties \u2014 Falls Chu",
     "zip": "",
