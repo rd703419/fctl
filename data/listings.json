@@ -40,6 +40,26 @@
     "scraped": "2026-07-09"
   },
   {
+    "id": "sc-8107b4b37d",
+    "address": "1577 WOODCREST DRIVE, RESTON, VA 20194",
+    "zip": "20194",
+    "county": "Fairfax",
+    "market": "dmv",
+    "stage": "Auction",
+    "filed": "2026-07-09",
+    "auction": "2026-09-11",
+    "est_value": 200000,
+    "source": "Rosenberg & Assoc.",
+    "url": "https://rosenberg-assoc.com/foreclosure-sales/",
+    "notes": "Case: 26-005582-VA-F-1. Deposit: $ 20,000",
+    "tax_owed": null,
+    "redemption_period": "",
+    "tax_rate": null,
+    "zestimate": 522632,
+    "zestimate_60pct": 313579,
+    "scraped": "2026-07-09"
+  },
+  {
     "id": "sc-aabd4cb1dd",
     "address": "739 WESTHILLS PARKWAY, BALTIMORE, MD 21229",
     "zip": "21229",
