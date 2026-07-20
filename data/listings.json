@@ -40,6 +40,26 @@
     "scraped": "2026-07-20"
   },
   {
+    "id": "sc-1fb0800ebd",
+    "address": "3739 S BEVERLY HILLS DR, TOLEDO",
+    "zip": "43614",
+    "county": "Lucas",
+    "market": "lucas",
+    "stage": "Auction",
+    "filed": "2026-07-20",
+    "auction": "2026-08-10",
+    "est_value": 119000,
+    "source": "Amlin Auctions",
+    "url": "https://www.amlinauctions.com/auctions/detail/bw166100",
+    "notes": "MINIMUM BID AUCTION $119,000! 3739 S Beverly Hills Dr",
+    "tax_owed": null,
+    "redemption_period": "",
+    "tax_rate": null,
+    "zestimate": 88852,
+    "zestimate_60pct": 53311,
+    "scraped": "2026-07-20"
+  },
+  {
     "id": "sc-bf3088276a",
     "address": "Multiple properties \u2014 Falls Chu",
     "zip": "",
