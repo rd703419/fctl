@@ -40,6 +40,26 @@
     "scraped": "2026-07-23"
   },
   {
+    "id": "sc-aeb4b81270",
+    "address": "4450 JIMMY GREENS PLACE, LA PLATA, MD 20646",
+    "zip": "20646",
+    "county": "Charles MD",
+    "market": "dmv",
+    "stage": "Auction",
+    "filed": "2026-07-23",
+    "auction": "2026-09-01",
+    "est_value": 300000,
+    "source": "Rosenberg & Assoc.",
+    "url": "https://rosenberg-assoc.com/foreclosure-sales/",
+    "notes": "Case: 22-000760-MD-F-1. Deposit: $ 30,000",
+    "tax_owed": null,
+    "redemption_period": "",
+    "tax_rate": null,
+    "zestimate": 358800,
+    "zestimate_60pct": 215280,
+    "scraped": "2026-07-23"
+  },
+  {
     "id": "sc-e679f38154",
     "address": "Multiple properties \u2014 Falls Chu",
     "zip": "",
