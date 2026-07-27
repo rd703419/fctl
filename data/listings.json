@@ -40,6 +40,26 @@
     "scraped": "2026-07-27"
   },
   {
+    "id": "sc-efe94bbe5e",
+    "address": "7549 SALISBURY RD, MAUMEE",
+    "zip": "",
+    "county": "Lucas",
+    "market": "lucas",
+    "stage": "Auction",
+    "filed": "2026-07-27",
+    "auction": "2026-07-24",
+    "est_value": null,
+    "source": "Amlin Auctions",
+    "url": "https://www.amlinauctions.com/auctions/detail/bw166108",
+    "notes": "Mower Repair Shop Liquidation, Tools & Equipment: Second Online Only Auction",
+    "tax_owed": null,
+    "redemption_period": "",
+    "tax_rate": null,
+    "zestimate": 403108,
+    "zestimate_60pct": 241864,
+    "scraped": "2026-07-27"
+  },
+  {
     "id": "sc-2674d31ee1",
     "address": "Multiple properties \u2014 Falls Chu",
     "zip": "",
