@@ -40,6 +40,26 @@
     "scraped": "2026-07-30"
   },
   {
+    "id": "sc-625cf28a90",
+    "address": "9420 RIVER ROAD, POTOMAC, MD 20854",
+    "zip": "20854",
+    "county": "Montgomery MD",
+    "market": "dmv",
+    "stage": "Auction",
+    "filed": "2026-07-30",
+    "auction": "2026-09-04",
+    "est_value": 400000,
+    "source": "Rosenberg & Assoc.",
+    "url": "https://rosenberg-assoc.com/foreclosure-sales/",
+    "notes": "Case: 25-005162-MD-F-2. Deposit: $ 40,000",
+    "tax_owed": null,
+    "redemption_period": "",
+    "tax_rate": null,
+    "zestimate": 811000,
+    "zestimate_60pct": 486600,
+    "scraped": "2026-07-30"
+  },
+  {
     "id": "sc-e945cb1071",
     "address": "Multiple properties \u2014 Falls Chu",
     "zip": "",
