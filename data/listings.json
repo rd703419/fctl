@@ -3007,7 +3007,7 @@
     "market": "lucas",
     "stage": "Auction",
     "filed": "2026-06-24",
-    "auction": "2026-07-22",
+    "auction": "2026-08-26",
     "est_value": null,
     "source": "Amlin Auctions",
     "url": "https://www.amlinauctions.com/auctions/detail/bw164635",
@@ -3017,7 +3017,7 @@
     "tax_rate": null,
     "zestimate": 536197,
     "zestimate_60pct": 321718,
-    "scraped": "2026-07-13"
+    "scraped": "2026-07-30"
   },
   {
     "id": "sc-e189f3357d",
