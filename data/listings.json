@@ -40,6 +40,26 @@
     "scraped": "2026-08-10"
   },
   {
+    "id": "sc-be8004ae59",
+    "address": "6279 CHAUCER VIEW CIRCLE, ALEXANDRIA, VA 22304",
+    "zip": "22304",
+    "county": "Alexandria",
+    "market": "dmv",
+    "stage": "Auction",
+    "filed": "2026-08-10",
+    "auction": "2026-10-16",
+    "est_value": 200000,
+    "source": "Rosenberg & Assoc.",
+    "url": "https://rosenberg-assoc.com/foreclosure-sales/",
+    "notes": "Case: 25-004024-VA-F-1. Deposit: $ 20,000",
+    "tax_owed": null,
+    "redemption_period": "",
+    "tax_rate": null,
+    "zestimate": 609300,
+    "zestimate_60pct": 365580,
+    "scraped": "2026-08-10"
+  },
+  {
     "id": "sc-45b13175d4",
     "address": "Multiple properties \u2014 Falls Chu",
     "zip": "",
