@@ -60,6 +60,26 @@
     "scraped": "2026-08-11"
   },
   {
+    "id": "sc-f1059ddf9c",
+    "address": "335 E LAKE ST, TOLEDO",
+    "zip": "43608",
+    "county": "Lucas",
+    "market": "lucas",
+    "stage": "Auction",
+    "filed": "2026-08-11",
+    "auction": "2026-09-09",
+    "est_value": null,
+    "source": "Amlin Auctions",
+    "url": "https://www.amlinauctions.com/auctions/detail/bw167459",
+    "notes": "Absolute Auction! 335 E Lake St",
+    "tax_owed": null,
+    "redemption_period": "",
+    "tax_rate": null,
+    "zestimate": 75000,
+    "zestimate_60pct": 45000,
+    "scraped": "2026-08-11"
+  },
+  {
     "id": "sc-f2b4a3f0ef",
     "address": "Multiple properties \u2014 Falls Chu",
     "zip": "",
