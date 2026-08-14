@@ -60,6 +60,26 @@
     "scraped": "2026-08-14"
   },
   {
+    "id": "sc-d0fd6570b7",
+    "address": "1923 W ALEXIS ROAD, TOLEDO",
+    "zip": "43613",
+    "county": "Lucas",
+    "market": "lucas",
+    "stage": "Auction",
+    "filed": "2026-08-14",
+    "auction": "2026-08-14",
+    "est_value": null,
+    "source": "Amlin Auctions",
+    "url": "https://www.amlinauctions.com/auctions/detail/bw167192",
+    "notes": "Cards, Comics, stuffed animals and more. Online only auction.",
+    "tax_owed": null,
+    "redemption_period": "",
+    "tax_rate": null,
+    "zestimate": 134000,
+    "zestimate_60pct": 80400,
+    "scraped": "2026-08-14"
+  },
+  {
     "id": "sc-4c148d2568",
     "address": "Multiple properties \u2014 Falls Chu",
     "zip": "",
@@ -5607,7 +5627,7 @@
     "market": "dmv",
     "stage": "Auction",
     "filed": "2026-05-28",
-    "auction": "2026-07-17",
+    "auction": "2026-09-18",
     "est_value": 300000,
     "source": "Rosenberg & Assoc.",
     "url": "https://rosenberg-assoc.com/foreclosure-sales/",
@@ -5617,7 +5637,7 @@
     "tax_rate": null,
     "zestimate": 594608,
     "zestimate_60pct": 356764,
-    "scraped": "2026-07-28"
+    "scraped": "2026-08-14"
   },
   {
     "id": "sc-67dceb6735",
