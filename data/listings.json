@@ -60,6 +60,26 @@
     "scraped": "2026-08-18"
   },
   {
+    "id": "sc-44ac4e6f62",
+    "address": "1943 GLENCAIRN AVE, TOLEDO",
+    "zip": "43614",
+    "county": "Lucas",
+    "market": "lucas",
+    "stage": "Auction",
+    "filed": "2026-08-18",
+    "auction": "2026-09-10",
+    "est_value": 100000,
+    "source": "Amlin Auctions",
+    "url": "https://www.amlinauctions.com/auctions/detail/bw167874",
+    "notes": "MINIMUM BID AUCTION $100,000! 1943 Glencairn Ave",
+    "tax_owed": null,
+    "redemption_period": "",
+    "tax_rate": null,
+    "zestimate": 246700,
+    "zestimate_60pct": 148020,
+    "scraped": "2026-08-18"
+  },
+  {
     "id": "sc-7ff31ef2f0",
     "address": "Multiple properties \u2014 Falls Chu",
     "zip": "",
