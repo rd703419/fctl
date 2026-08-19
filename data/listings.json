@@ -40,6 +40,26 @@
     "scraped": "2026-08-19"
   },
   {
+    "id": "sc-bc00a3d88a",
+    "address": "314 CLINTON ST, MAUMEE",
+    "zip": "",
+    "county": "Lucas",
+    "market": "lucas",
+    "stage": "Auction",
+    "filed": "2026-08-19",
+    "auction": "2026-09-01",
+    "est_value": 75000,
+    "source": "Amlin Auctions",
+    "url": "https://www.amlinauctions.com/auctions/detail/bw167976",
+    "notes": "MINIMUM BID AUCTION $75,000! 314 Clinton St",
+    "tax_owed": null,
+    "redemption_period": "",
+    "tax_rate": null,
+    "zestimate": 153000,
+    "zestimate_60pct": 91800,
+    "scraped": "2026-08-19"
+  },
+  {
     "id": "sc-9296bce07f",
     "address": "43944 RIVERPOINT DRIVE, LANSDOWNE, VA 20176",
     "zip": "20176",
