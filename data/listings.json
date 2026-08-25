@@ -40,6 +40,26 @@
     "scraped": "2026-08-25"
   },
   {
+    "id": "sc-f09c609f25",
+    "address": "2630 EDGEHILL DR",
+    "zip": "43615",
+    "county": "Lucas",
+    "market": "lucas",
+    "stage": "Auction",
+    "filed": "2026-08-25",
+    "auction": "2026-09-22",
+    "est_value": 399000,
+    "source": "Amlin Auctions",
+    "url": "https://www.amlinauctions.com/auctions/detail/bw168374",
+    "notes": "MINIMUM BID AUCTION $399,000! 2630 Edgehill Rd",
+    "tax_owed": null,
+    "redemption_period": "",
+    "tax_rate": null,
+    "zestimate": 123300,
+    "zestimate_60pct": 73980,
+    "scraped": "2026-08-25"
+  },
+  {
     "id": "sc-3d808fe241",
     "address": "Multiple properties \u2014 Falls Chu",
     "zip": "",
