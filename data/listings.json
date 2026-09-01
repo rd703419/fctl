@@ -40,6 +40,26 @@
     "scraped": "2026-09-01"
   },
   {
+    "id": "sc-b65d96f4e1",
+    "address": "4514 EDEN PARK LANE, UPPER MARLBORO, MD 20772",
+    "zip": "20772",
+    "county": "Prince George's MD",
+    "market": "dmv",
+    "stage": "Auction",
+    "filed": "2026-09-01",
+    "auction": "2026-10-20",
+    "est_value": 300000,
+    "source": "Rosenberg & Assoc.",
+    "url": "https://rosenberg-assoc.com/foreclosure-sales/",
+    "notes": "Case: 23-000963-MD-F-2. Deposit: $ 30,000",
+    "tax_owed": null,
+    "redemption_period": "",
+    "tax_rate": null,
+    "zestimate": 348900,
+    "zestimate_60pct": 209340,
+    "scraped": "2026-09-01"
+  },
+  {
     "id": "sc-0f078dbcc1",
     "address": "Multiple properties \u2014 Falls Chu",
     "zip": "",
