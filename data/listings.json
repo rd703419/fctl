@@ -40,6 +40,26 @@
     "scraped": "2026-09-04"
   },
   {
+    "id": "sc-f8ed52f7e0",
+    "address": "1027 SECOR RD, TOLEDO",
+    "zip": "43607",
+    "county": "Lucas",
+    "market": "lucas",
+    "stage": "Auction",
+    "filed": "2026-09-04",
+    "auction": "2026-09-29",
+    "est_value": 99000,
+    "source": "Amlin Auctions",
+    "url": "https://www.amlinauctions.com/auctions/detail/bw169094",
+    "notes": "MINIMUM BID AUCTION $99,000! 1027 Secor Rd",
+    "tax_owed": null,
+    "redemption_period": "",
+    "tax_rate": null,
+    "zestimate": null,
+    "zestimate_60pct": null,
+    "scraped": "2026-09-04"
+  },
+  {
     "id": "sc-81329c02fa",
     "address": "Multiple properties \u2014 Falls Chu",
     "zip": "",
