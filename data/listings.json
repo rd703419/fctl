@@ -60,6 +60,26 @@
     "scraped": "2026-09-08"
   },
   {
+    "id": "sc-9bbb75fcb7",
+    "address": "5745 MOLINE MARTIN RD",
+    "zip": "",
+    "county": "Lucas",
+    "market": "lucas",
+    "stage": "Auction",
+    "filed": "2026-09-08",
+    "auction": "2026-10-07",
+    "est_value": 150000,
+    "source": "Amlin Auctions",
+    "url": "https://www.amlinauctions.com/auctions/detail/bw169258",
+    "notes": "MINIMUM BID AUCTION $150,000! 5745 Moline Martin Rd",
+    "tax_owed": null,
+    "redemption_period": "",
+    "tax_rate": null,
+    "zestimate": 178000,
+    "zestimate_60pct": 106800,
+    "scraped": "2026-09-08"
+  },
+  {
     "id": "sc-2624835f90",
     "address": "Multiple properties \u2014 Falls Chu",
     "zip": "",
