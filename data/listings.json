@@ -80,6 +80,26 @@
     "scraped": "2026-09-11"
   },
   {
+    "id": "sc-728b30d0c2",
+    "address": "2445 WARREN ST, TOLEDO",
+    "zip": "43620",
+    "county": "Lucas",
+    "market": "lucas",
+    "stage": "Auction",
+    "filed": "2026-09-11",
+    "auction": "2026-10-22",
+    "est_value": 30000,
+    "source": "Amlin Auctions",
+    "url": "https://www.amlinauctions.com/auctions/detail/bw169582",
+    "notes": "MINIMUM BID AUCTION $30,000! 2445 Warren St",
+    "tax_owed": null,
+    "redemption_period": "",
+    "tax_rate": null,
+    "zestimate": null,
+    "zestimate_60pct": null,
+    "scraped": "2026-09-11"
+  },
+  {
     "id": "sc-66ced10fec",
     "address": "Multiple properties \u2014 Falls Chu",
     "zip": "",
