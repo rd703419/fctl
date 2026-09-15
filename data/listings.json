@@ -100,6 +100,26 @@
     "scraped": "2026-09-15"
   },
   {
+    "id": "sc-8eed0ad083",
+    "address": "5437 LOGGERHEAD PLACE, WOODBRIDGE, VA 22193",
+    "zip": "22193",
+    "county": "Prince William",
+    "market": "dmv",
+    "stage": "Auction",
+    "filed": "2026-09-15",
+    "auction": "2026-11-20",
+    "est_value": 200000,
+    "source": "Rosenberg & Assoc.",
+    "url": "https://rosenberg-assoc.com/foreclosure-sales/",
+    "notes": "Case: 26-005783-VA-F-1. Deposit: $ 20,000",
+    "tax_owed": null,
+    "redemption_period": "",
+    "tax_rate": null,
+    "zestimate": 494197,
+    "zestimate_60pct": 296518,
+    "scraped": "2026-09-15"
+  },
+  {
     "id": "sc-261faec04d",
     "address": "Multiple properties \u2014 Falls Chu",
     "zip": "",
@@ -2087,7 +2107,7 @@
     "market": "lucas",
     "stage": "Auction",
     "filed": "2026-08-18",
-    "auction": "2026-09-10",
+    "auction": "2026-09-24",
     "est_value": 100000,
     "source": "Amlin Auctions",
     "url": "https://www.amlinauctions.com/auctions/detail/bw167874",
@@ -2097,7 +2117,7 @@
     "tax_rate": null,
     "zestimate": 246700,
     "zestimate_60pct": 148020,
-    "scraped": "2026-09-11"
+    "scraped": "2026-09-15"
   },
   {
     "id": "sc-7ff31ef2f0",
@@ -2787,7 +2807,7 @@
     "market": "dmv",
     "stage": "Auction",
     "filed": "2026-08-07",
-    "auction": "2026-10-16",
+    "auction": "2026-11-20",
     "est_value": 200000,
     "source": "Rosenberg & Assoc.",
     "url": "https://rosenberg-assoc.com/foreclosure-sales/",
@@ -2797,7 +2817,7 @@
     "tax_rate": null,
     "zestimate": 2349600,
     "zestimate_60pct": 1409760,
-    "scraped": "2026-08-07"
+    "scraped": "2026-09-15"
   },
   {
     "id": "sc-6688bb11f5",
