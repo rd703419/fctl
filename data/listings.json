@@ -40,6 +40,26 @@
     "scraped": "2026-09-22"
   },
   {
+    "id": "sc-568572f150",
+    "address": "2334 SHEPPERD ROAD, MONKTON, MD 21111",
+    "zip": "21111",
+    "county": "Baltimore",
+    "market": "dmv",
+    "stage": "Auction",
+    "filed": "2026-09-22",
+    "auction": "2026-09-17",
+    "est_value": 300000,
+    "source": "Rosenberg & Assoc.",
+    "url": "https://rosenberg-assoc.com/foreclosure-sales/",
+    "notes": "Case: 22-000239-MD-F-3. Deposit: $ 30,000",
+    "tax_owed": null,
+    "redemption_period": "",
+    "tax_rate": null,
+    "zestimate": 494000,
+    "zestimate_60pct": 296400,
+    "scraped": "2026-09-22"
+  },
+  {
     "id": "sc-4970c822c7",
     "address": "Multiple properties \u2014 Falls Chu",
     "zip": "",
