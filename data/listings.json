@@ -80,6 +80,26 @@
     "scraped": "2026-09-24"
   },
   {
+    "id": "sc-fcad5df7c5",
+    "address": "16971 PURCELLVILLE ROAD, PURCELLVILLE, VA 20132",
+    "zip": "20132",
+    "county": "Loudoun",
+    "market": "dmv",
+    "stage": "Auction",
+    "filed": "2026-09-24",
+    "auction": "2026-11-30",
+    "est_value": 200000,
+    "source": "Rosenberg & Assoc.",
+    "url": "https://rosenberg-assoc.com/foreclosure-sales/",
+    "notes": "Case: 26-005879-VA-F-1. Deposit: $ 20,000",
+    "tax_owed": null,
+    "redemption_period": "",
+    "tax_rate": null,
+    "zestimate": 780782,
+    "zestimate_60pct": 468469,
+    "scraped": "2026-09-24"
+  },
+  {
     "id": "sc-175ef2b0d8",
     "address": "Multiple properties \u2014 Falls Chu",
     "zip": "",
