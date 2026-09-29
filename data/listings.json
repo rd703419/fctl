@@ -40,6 +40,26 @@
     "scraped": "2026-09-29"
   },
   {
+    "id": "sc-0bd2a68c9f",
+    "address": "5312 DEAL DRIVE, OXON HILL, MD 20745",
+    "zip": "20745",
+    "county": "Prince George's MD",
+    "market": "dmv",
+    "stage": "Auction",
+    "filed": "2026-09-29",
+    "auction": "2026-11-10",
+    "est_value": 100000,
+    "source": "Rosenberg & Assoc.",
+    "url": "https://rosenberg-assoc.com/foreclosure-sales/",
+    "notes": "Case: 26-005577-MD-F-1. Deposit: $ 10,000",
+    "tax_owed": null,
+    "redemption_period": "",
+    "tax_rate": null,
+    "zestimate": null,
+    "zestimate_60pct": null,
+    "scraped": "2026-09-29"
+  },
+  {
     "id": "sc-446ae204aa",
     "address": "Multiple properties \u2014 Falls Chu",
     "zip": "",
@@ -4147,7 +4167,7 @@
     "market": "dmv",
     "stage": "Auction",
     "filed": "2026-08-01",
-    "auction": "2026-09-04",
+    "auction": "2026-10-30",
     "est_value": 200000,
     "source": "Rosenberg & Assoc.",
     "url": "https://rosenberg-assoc.com/foreclosure-sales/",
@@ -4157,7 +4177,7 @@
     "tax_rate": null,
     "zestimate": 580000,
     "zestimate_60pct": 348000,
-    "scraped": "2026-09-15"
+    "scraped": "2026-09-29"
   },
   {
     "id": "sc-ac9721b806",
