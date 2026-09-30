@@ -40,6 +40,26 @@
     "scraped": "2026-09-30"
   },
   {
+    "id": "sc-fcf14f7cc9",
+    "address": "14812 DUNBARTON DRIVE, UPPER MARLBORO, MD 20772",
+    "zip": "20772",
+    "county": "Prince George's MD",
+    "market": "dmv",
+    "stage": "Auction",
+    "filed": "2026-09-30",
+    "auction": "2026-10-27",
+    "est_value": 300000,
+    "source": "Rosenberg & Assoc.",
+    "url": "https://rosenberg-assoc.com/foreclosure-sales/",
+    "notes": "Case: 23-001422-MD-F-3. Deposit: $ 30,000",
+    "tax_owed": null,
+    "redemption_period": "",
+    "tax_rate": null,
+    "zestimate": 567900,
+    "zestimate_60pct": 340740,
+    "scraped": "2026-09-30"
+  },
+  {
     "id": "sc-e0cedccb78",
     "address": "Multiple properties \u2014 Falls Chu",
     "zip": "",
@@ -95,8 +115,8 @@
     "tax_owed": null,
     "redemption_period": "",
     "tax_rate": null,
-    "zestimate": null,
-    "zestimate_60pct": null,
+    "zestimate": 398000,
+    "zestimate_60pct": 238800,
     "scraped": "2026-09-30"
   },
   {
