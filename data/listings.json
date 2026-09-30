@@ -5787,7 +5787,7 @@
     "market": "dmv",
     "stage": "Auction",
     "filed": "2026-07-13",
-    "auction": "2026-08-18",
+    "auction": "2026-11-10",
     "est_value": 200000,
     "source": "Rosenberg & Assoc.",
     "url": "https://rosenberg-assoc.com/foreclosure-sales/",
@@ -5797,7 +5797,7 @@
     "tax_rate": null,
     "zestimate": 475100,
     "zestimate_60pct": 285060,
-    "scraped": "2026-08-29"
+    "scraped": "2026-09-30"
   },
   {
     "id": "sc-e5fbd4de3d",
