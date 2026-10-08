@@ -40,6 +40,26 @@
     "scraped": "2026-10-08"
   },
   {
+    "id": "sc-116a39a9bb",
+    "address": "7290 SIMMS LANDING ROAD, PORT TOBACCO, MD 20677",
+    "zip": "20677",
+    "county": "Charles MD",
+    "market": "dmv",
+    "stage": "Auction",
+    "filed": "2026-10-08",
+    "auction": "2026-11-24",
+    "est_value": 300000,
+    "source": "Rosenberg & Assoc.",
+    "url": "https://rosenberg-assoc.com/foreclosure-sales/",
+    "notes": "Case: 25-005034-MD-F-1. Deposit: $ 30,000",
+    "tax_owed": null,
+    "redemption_period": "",
+    "tax_rate": null,
+    "zestimate": 855054,
+    "zestimate_60pct": 513032,
+    "scraped": "2026-10-08"
+  },
+  {
     "id": "sc-4fd815fe12",
     "address": "Multiple properties \u2014 Falls Chu",
     "zip": "",
@@ -2827,7 +2847,7 @@
     "market": "dmv",
     "stage": "Auction",
     "filed": "2026-08-31",
-    "auction": "2026-10-07",
+    "auction": "2026-11-18",
     "est_value": 150000,
     "source": "Rosenberg & Assoc.",
     "url": "https://rosenberg-assoc.com/foreclosure-sales/",
@@ -6367,7 +6387,7 @@
     "market": "lucas",
     "stage": "Auction",
     "filed": "2026-07-13",
-    "auction": "2026-07-22",
+    "auction": "2026-10-28",
     "est_value": null,
     "source": "Amlin Auctions",
     "url": "https://www.amlinauctions.com/auctions/detail/bw164635",
@@ -6377,7 +6397,7 @@
     "tax_rate": null,
     "zestimate": 229000,
     "zestimate_60pct": 137400,
-    "scraped": "2026-07-23"
+    "scraped": "2026-10-08"
   },
   {
     "id": "sc-30041cd756",
