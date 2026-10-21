@@ -40,6 +40,26 @@
     "scraped": "2026-10-21"
   },
   {
+    "id": "sc-f875739ea1",
+    "address": "1962 ERIE RD",
+    "zip": "",
+    "county": "Lucas",
+    "market": "lucas",
+    "stage": "Auction",
+    "filed": "2026-10-21",
+    "auction": "2026-10-21",
+    "est_value": 79000,
+    "source": "Amlin Auctions",
+    "url": "https://www.amlinauctions.com/auctions/detail/bw170156",
+    "notes": "MINIMUM BID AUCTION $79,000! 1962 Erie Rd",
+    "tax_owed": null,
+    "redemption_period": "",
+    "tax_rate": null,
+    "zestimate": 79925,
+    "zestimate_60pct": 47955,
+    "scraped": "2026-10-21"
+  },
+  {
     "id": "sc-86d1f04a0b",
     "address": "728 EAST FORT AVENUE, BALTIMORE, MD 21230",
     "zip": "21230",
@@ -895,8 +915,8 @@
     "tax_owed": null,
     "redemption_period": "",
     "tax_rate": null,
-    "zestimate": null,
-    "zestimate_60pct": null,
+    "zestimate": 158723,
+    "zestimate_60pct": 95233,
     "scraped": "2026-10-21"
   },
   {
