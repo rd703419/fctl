@@ -80,6 +80,26 @@
     "scraped": "2026-10-28"
   },
   {
+    "id": "sc-9ac891788e",
+    "address": "308 MONROE ST",
+    "zip": "",
+    "county": "Lucas",
+    "market": "lucas",
+    "stage": "Auction",
+    "filed": "2026-10-28",
+    "auction": "2026-10-27",
+    "est_value": null,
+    "source": "Amlin Auctions",
+    "url": "https://www.amlinauctions.com/auctions/detail/bw169781",
+    "notes": "REAL ESTATE AUCTION! 308 Monroe St",
+    "tax_owed": null,
+    "redemption_period": "",
+    "tax_rate": null,
+    "zestimate": 295400,
+    "zestimate_60pct": 177240,
+    "scraped": "2026-10-28"
+  },
+  {
     "id": "sc-49b0c90b14",
     "address": "Multiple properties \u2014 Falls Chu",
     "zip": "",
