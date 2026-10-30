@@ -40,6 +40,26 @@
     "scraped": "2026-10-30"
   },
   {
+    "id": "sc-0b9e269478",
+    "address": "22995 LOIS LANE, BRAMBLETON, VA 20148",
+    "zip": "20148",
+    "county": "Loudoun",
+    "market": "dmv",
+    "stage": "Auction",
+    "filed": "2026-10-30",
+    "auction": "2027-01-04",
+    "est_value": 200000,
+    "source": "Rosenberg & Assoc.",
+    "url": "https://rosenberg-assoc.com/foreclosure-sales/",
+    "notes": "Case: 25-004862-VA-F-1. Deposit: $ 20,000",
+    "tax_owed": null,
+    "redemption_period": "",
+    "tax_rate": null,
+    "zestimate": 723000,
+    "zestimate_60pct": 433800,
+    "scraped": "2026-10-30"
+  },
+  {
     "id": "sc-20073916d8",
     "address": "Multiple properties \u2014 Falls Chu",
     "zip": "",
