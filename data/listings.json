@@ -40,6 +40,26 @@
     "scraped": "2026-10-31"
   },
   {
+    "id": "sc-ea81900f27",
+    "address": "11509 AMHERST AVENUE APT: 204, SILVER SPRING, MD 20902",
+    "zip": "20902",
+    "county": "Montgomery MD",
+    "market": "dmv",
+    "stage": "Auction",
+    "filed": "2026-10-31",
+    "auction": "2026-10-30",
+    "est_value": 200000,
+    "source": "Rosenberg & Assoc.",
+    "url": "https://rosenberg-assoc.com/foreclosure-sales/",
+    "notes": "Case: 26-005323-MD-F-1. Deposit: $ 20,000",
+    "tax_owed": null,
+    "redemption_period": "",
+    "tax_rate": null,
+    "zestimate": 187700,
+    "zestimate_60pct": 112620,
+    "scraped": "2026-10-31"
+  },
+  {
     "id": "sc-23e8c8e298",
     "address": "Multiple properties \u2014 Falls Chu",
     "zip": "",
