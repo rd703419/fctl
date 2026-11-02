@@ -40,6 +40,26 @@
     "scraped": "2026-11-02"
   },
   {
+    "id": "sc-2e29de33da",
+    "address": "1537 REDEEMED 845917 REDEEMED 17802 LYDA LN., DUMFRIES VA 22026 REDEEME",
+    "zip": "",
+    "county": "P",
+    "market": "dmv",
+    "stage": "Tax Deed",
+    "filed": "2026-11-02",
+    "auction": "2026-11-10",
+    "est_value": null,
+    "source": "TACS (taxva.com)",
+    "url": "https://taxva.com/rs-tax-sales/prince-william-county-real-estate-tax-sales-2/",
+    "notes": "VA tax deed sale \u2014 P",
+    "tax_owed": null,
+    "redemption_period": "",
+    "tax_rate": null,
+    "zestimate": 441000,
+    "zestimate_60pct": 264600,
+    "scraped": "2026-11-02"
+  },
+  {
     "id": "sc-4e0ef57149",
     "address": "Multiple properties \u2014 Falls Chu",
     "zip": "",
