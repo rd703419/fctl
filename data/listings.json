@@ -40,6 +40,26 @@
     "scraped": "2026-11-04"
   },
   {
+    "id": "sc-41b602743f",
+    "address": "1460 WOODVILLE ROAD",
+    "zip": "",
+    "county": "Lucas",
+    "market": "lucas",
+    "stage": "Auction",
+    "filed": "2026-11-04",
+    "auction": "2026-11-04",
+    "est_value": null,
+    "source": "Amlin Auctions",
+    "url": "https://www.amlinauctions.com/auctions/detail/bw169506",
+    "notes": "TURN KEY BUSINESS AUCTION! 1460 Woodville Rd",
+    "tax_owed": null,
+    "redemption_period": "",
+    "tax_rate": null,
+    "zestimate": 217300,
+    "zestimate_60pct": 130380,
+    "scraped": "2026-11-04"
+  },
+  {
     "id": "sc-3d9e3410c5",
     "address": "5406 READY AVENUE, BALTIMORE, MD 21212",
     "zip": "21212",
