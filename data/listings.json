@@ -40,6 +40,26 @@
     "scraped": "2026-11-06"
   },
   {
+    "id": "sc-cc38254e4a",
+    "address": "913 MOOREFIELD HILL GROVE SOUTHWEST, VIENNA, VA 22180",
+    "zip": "22180",
+    "county": "Fairfax",
+    "market": "dmv",
+    "stage": "Auction",
+    "filed": "2026-11-06",
+    "auction": "2026-11-20",
+    "est_value": 200000,
+    "source": "Rosenberg & Assoc.",
+    "url": "https://rosenberg-assoc.com/foreclosure-sales/",
+    "notes": "Case: 26-005703-VA-F-1. Deposit: $ 20,000",
+    "tax_owed": null,
+    "redemption_period": "",
+    "tax_rate": null,
+    "zestimate": 876765,
+    "zestimate_60pct": 526059,
+    "scraped": "2026-11-06"
+  },
+  {
     "id": "sc-6966b60208",
     "address": "Multiple properties \u2014 Falls Chu",
     "zip": "",
