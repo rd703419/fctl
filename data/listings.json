@@ -1,5 +1,45 @@
 [
   {
+    "id": "sc-81237dde5a",
+    "address": "Multiple properties \u2014 Falls Chu",
+    "zip": "",
+    "county": "Falls Chu",
+    "market": "dmv",
+    "stage": "Tax Deed",
+    "filed": "2026-11-13",
+    "auction": null,
+    "est_value": null,
+    "source": "TACS (taxva.com)",
+    "url": "https://taxva.com/rs-tax-sales/city-of-falls-church-initial-advertisement-2/",
+    "notes": "VA tax deed sale \u2014 Falls Chu. See link for properties.",
+    "tax_owed": null,
+    "redemption_period": "",
+    "tax_rate": null,
+    "zestimate": null,
+    "zestimate_60pct": null,
+    "scraped": "2026-11-13"
+  },
+  {
+    "id": "sc-74e89d45b8",
+    "address": "Multiple properties \u2014 Alexand",
+    "zip": "",
+    "county": "Alexand",
+    "market": "dmv",
+    "stage": "Tax Deed",
+    "filed": "2026-11-13",
+    "auction": null,
+    "est_value": null,
+    "source": "TACS (taxva.com)",
+    "url": "https://taxva.com/rs-tax-sales/city-of-alexandria-initial-advertisement-2/",
+    "notes": "VA tax deed sale \u2014 Alexand. See link for properties.",
+    "tax_owed": null,
+    "redemption_period": "",
+    "tax_rate": null,
+    "zestimate": null,
+    "zestimate_60pct": null,
+    "scraped": "2026-11-13"
+  },
+  {
     "id": "sc-3d1940b454",
     "address": "Multiple properties \u2014 Falls Chu",
     "zip": "",
@@ -57,7 +97,7 @@
     "tax_rate": null,
     "zestimate": 421000,
     "zestimate_60pct": 252600,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-8ee6fe1052",
@@ -77,7 +117,7 @@
     "tax_rate": null,
     "zestimate": 382000,
     "zestimate_60pct": 229200,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-81193a1665",
@@ -97,7 +137,7 @@
     "tax_rate": null,
     "zestimate": 718000,
     "zestimate_60pct": 430800,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-0db9f86bf7",
@@ -117,7 +157,7 @@
     "tax_rate": null,
     "zestimate": 1489700,
     "zestimate_60pct": 893820,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-87d4320706",
@@ -137,7 +177,7 @@
     "tax_rate": null,
     "zestimate": 261000,
     "zestimate_60pct": 156600,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-d4c884856c",
@@ -237,7 +277,7 @@
     "tax_rate": null,
     "zestimate": 903323,
     "zestimate_60pct": 541993,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-5c20e3189f",
@@ -257,7 +297,7 @@
     "tax_rate": null,
     "zestimate": 608600,
     "zestimate_60pct": 365160,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-d1a40f6948",
@@ -277,7 +317,7 @@
     "tax_rate": null,
     "zestimate": 297000,
     "zestimate_60pct": 178200,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-8c9e27bbe8",
@@ -297,7 +337,7 @@
     "tax_rate": null,
     "zestimate": 441000,
     "zestimate_60pct": 264600,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-6afaff61af",
@@ -317,7 +357,7 @@
     "tax_rate": null,
     "zestimate": null,
     "zestimate_60pct": null,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-f659336187",
@@ -517,7 +557,7 @@
     "tax_rate": null,
     "zestimate": 876765,
     "zestimate_60pct": 526059,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-34975198af",
@@ -537,7 +577,7 @@
     "tax_rate": null,
     "zestimate": 732700,
     "zestimate_60pct": 439620,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-9da3d58056",
@@ -557,7 +597,7 @@
     "tax_rate": null,
     "zestimate": 338900,
     "zestimate_60pct": 203340,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-967bf2ab92",
@@ -577,7 +617,7 @@
     "tax_rate": null,
     "zestimate": 361000,
     "zestimate_60pct": 216600,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-54d220e024",
@@ -597,7 +637,7 @@
     "tax_rate": null,
     "zestimate": 502500,
     "zestimate_60pct": 301500,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-c2d1dac6cc",
@@ -617,7 +657,7 @@
     "tax_rate": null,
     "zestimate": 501000,
     "zestimate_60pct": 300600,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-2eb4242680",
@@ -657,7 +697,7 @@
     "tax_rate": null,
     "zestimate": 196920,
     "zestimate_60pct": 118152,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-6966b60208",
@@ -717,7 +757,7 @@
     "tax_rate": null,
     "zestimate": 478300,
     "zestimate_60pct": 286980,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-c87d3c4a51",
@@ -797,7 +837,7 @@
     "tax_rate": null,
     "zestimate": 198300,
     "zestimate_60pct": 118980,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-7ac806e4fb",
@@ -817,7 +857,7 @@
     "tax_rate": null,
     "zestimate": null,
     "zestimate_60pct": null,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-8825b756af",
@@ -837,7 +877,7 @@
     "tax_rate": null,
     "zestimate": null,
     "zestimate_60pct": null,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-28afe800d1",
@@ -897,7 +937,7 @@
     "tax_rate": null,
     "zestimate": 69000,
     "zestimate_60pct": 41400,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-fb3a70d84a",
@@ -917,7 +957,7 @@
     "tax_rate": null,
     "zestimate": 72000,
     "zestimate_60pct": 43200,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-1836ccde36",
@@ -957,7 +997,7 @@
     "tax_rate": null,
     "zestimate": 510400,
     "zestimate_60pct": 306240,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-84f1cde974",
@@ -977,7 +1017,7 @@
     "tax_rate": null,
     "zestimate": 195200,
     "zestimate_60pct": 117120,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-259c7dbe42",
@@ -997,7 +1037,7 @@
     "tax_rate": null,
     "zestimate": 181332,
     "zestimate_60pct": 108799,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-9551fe7b83",
@@ -1017,7 +1057,7 @@
     "tax_rate": null,
     "zestimate": 445000,
     "zestimate_60pct": 267000,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-7b3439a460",
@@ -1037,7 +1077,7 @@
     "tax_rate": null,
     "zestimate": 237000,
     "zestimate_60pct": 142200,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-caf12383a6",
@@ -1057,7 +1097,7 @@
     "tax_rate": null,
     "zestimate": 595400,
     "zestimate_60pct": 357240,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-50561aad55",
@@ -1077,7 +1117,7 @@
     "tax_rate": null,
     "zestimate": 616000,
     "zestimate_60pct": 369600,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-f643df94d6",
@@ -1297,7 +1337,7 @@
     "tax_rate": null,
     "zestimate": 723000,
     "zestimate_60pct": 433800,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-20073916d8",
@@ -1357,7 +1397,7 @@
     "tax_rate": null,
     "zestimate": 193000,
     "zestimate_60pct": 115800,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-dac81338ee",
@@ -1377,7 +1417,7 @@
     "tax_rate": null,
     "zestimate": 718000,
     "zestimate_60pct": 430800,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-6f40824564",
@@ -1397,7 +1437,7 @@
     "tax_rate": null,
     "zestimate": 647600,
     "zestimate_60pct": 388560,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-5c4777fe0b",
@@ -1517,7 +1557,7 @@
     "tax_rate": null,
     "zestimate": 75044,
     "zestimate_60pct": 45026,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-f258353147",
@@ -1537,7 +1577,7 @@
     "tax_rate": null,
     "zestimate": 75044,
     "zestimate_60pct": 45026,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-7c2e28c9e5",
@@ -1557,7 +1597,7 @@
     "tax_rate": null,
     "zestimate": 75044,
     "zestimate_60pct": 45026,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-0fbd87b9d8",
@@ -1577,7 +1617,7 @@
     "tax_rate": null,
     "zestimate": 304600,
     "zestimate_60pct": 182760,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-5194683959",
@@ -1597,7 +1637,7 @@
     "tax_rate": null,
     "zestimate": 74000,
     "zestimate_60pct": 44400,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-39b17530a4",
@@ -1617,7 +1657,7 @@
     "tax_rate": null,
     "zestimate": null,
     "zestimate_60pct": null,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-8447832bbf",
@@ -1637,7 +1677,7 @@
     "tax_rate": null,
     "zestimate": 768300,
     "zestimate_60pct": 460980,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-3f7d1704e6",
@@ -1657,7 +1697,7 @@
     "tax_rate": null,
     "zestimate": 3756220,
     "zestimate_60pct": 2253732,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-69aa3790ff",
@@ -1717,7 +1757,7 @@
     "tax_rate": null,
     "zestimate": null,
     "zestimate_60pct": null,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-68a83471e8",
@@ -1737,7 +1777,7 @@
     "tax_rate": null,
     "zestimate": 381900,
     "zestimate_60pct": 229140,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-e3ae7d38c5",
@@ -1757,7 +1797,7 @@
     "tax_rate": null,
     "zestimate": 718000,
     "zestimate_60pct": 430800,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-039a9a640b",
@@ -1777,7 +1817,7 @@
     "tax_rate": null,
     "zestimate": 88000,
     "zestimate_60pct": 52800,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-c178cd5000",
@@ -1797,7 +1837,7 @@
     "tax_rate": null,
     "zestimate": 317000,
     "zestimate_60pct": 190200,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-b0e1e01bd7",
@@ -1817,7 +1857,7 @@
     "tax_rate": null,
     "zestimate": 317000,
     "zestimate_60pct": 190200,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-2c647e95cb",
@@ -1837,7 +1877,7 @@
     "tax_rate": null,
     "zestimate": 903000,
     "zestimate_60pct": 541800,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-11e0f964e9",
@@ -1977,7 +2017,7 @@
     "tax_rate": null,
     "zestimate": 262000,
     "zestimate_60pct": 157200,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-b225aca020",
@@ -1997,7 +2037,7 @@
     "tax_rate": null,
     "zestimate": 1109000,
     "zestimate_60pct": 665400,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-196a2fee4d",
@@ -2017,7 +2057,7 @@
     "tax_rate": null,
     "zestimate": 249644,
     "zestimate_60pct": 149786,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-664b973c31",
@@ -2137,7 +2177,7 @@
     "tax_rate": null,
     "zestimate": 409100,
     "zestimate_60pct": 245460,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-2b87214dfb",
@@ -2197,7 +2237,7 @@
     "tax_rate": null,
     "zestimate": 202000,
     "zestimate_60pct": 121200,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-4138f4ef43",
@@ -2217,7 +2257,7 @@
     "tax_rate": null,
     "zestimate": 336800,
     "zestimate_60pct": 202080,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-5aa5cce692",
@@ -2237,7 +2277,7 @@
     "tax_rate": null,
     "zestimate": 269000,
     "zestimate_60pct": 161400,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-51a87ebe4f",
@@ -2257,7 +2297,7 @@
     "tax_rate": null,
     "zestimate": 326100,
     "zestimate_60pct": 195660,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-c3ecd8fc18",
@@ -2317,7 +2357,7 @@
     "tax_rate": null,
     "zestimate": 64000,
     "zestimate_60pct": 38400,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-005e64a766",
@@ -2337,7 +2377,7 @@
     "tax_rate": null,
     "zestimate": 366000,
     "zestimate_60pct": 219600,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-29dd34652b",
@@ -2377,7 +2417,7 @@
     "tax_rate": null,
     "zestimate": 431000,
     "zestimate_60pct": 258600,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-db1e23e73d",
@@ -2517,7 +2557,7 @@
     "tax_rate": null,
     "zestimate": 249006,
     "zestimate_60pct": 149403,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-b2d8321814",
@@ -2557,7 +2597,7 @@
     "tax_rate": null,
     "zestimate": 1169030,
     "zestimate_60pct": 701418,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-6374e818db",
@@ -2577,7 +2617,7 @@
     "tax_rate": null,
     "zestimate": 742000,
     "zestimate_60pct": 445200,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-53eb0857cb",
@@ -2637,7 +2677,7 @@
     "tax_rate": null,
     "zestimate": 371000,
     "zestimate_60pct": 222600,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-b3bd3862e2",
@@ -2657,7 +2697,7 @@
     "tax_rate": null,
     "zestimate": 853100,
     "zestimate_60pct": 511860,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-f0bf410365",
@@ -2737,7 +2777,7 @@
     "tax_rate": null,
     "zestimate": 2427568,
     "zestimate_60pct": 1456540,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-7431911218",
@@ -2857,7 +2897,7 @@
     "tax_rate": null,
     "zestimate": 442905,
     "zestimate_60pct": 265743,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-a17c2cca22",
@@ -3177,7 +3217,7 @@
     "tax_rate": null,
     "zestimate": 428630,
     "zestimate_60pct": 257178,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-c80af9f759",
@@ -3197,7 +3237,7 @@
     "tax_rate": null,
     "zestimate": 383100,
     "zestimate_60pct": 229860,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-831d1359b8",
@@ -3217,7 +3257,7 @@
     "tax_rate": null,
     "zestimate": 402300,
     "zestimate_60pct": 241380,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-c80805ab7d",
@@ -3377,7 +3417,7 @@
     "tax_rate": null,
     "zestimate": 4912500,
     "zestimate_60pct": 2947500,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-1fc309f148",
@@ -3437,7 +3477,7 @@
     "tax_rate": null,
     "zestimate": 855054,
     "zestimate_60pct": 513032,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-4fd815fe12",
@@ -3497,7 +3537,7 @@
     "tax_rate": null,
     "zestimate": 455000,
     "zestimate_60pct": 273000,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-496dbbf19c",
@@ -3517,7 +3557,7 @@
     "tax_rate": null,
     "zestimate": 683000,
     "zestimate_60pct": 409800,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-0813e98655",
@@ -3537,7 +3577,7 @@
     "tax_rate": null,
     "zestimate": 377700,
     "zestimate_60pct": 226620,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-c345a467bf",
@@ -3617,7 +3657,7 @@
     "tax_rate": null,
     "zestimate": 1165642,
     "zestimate_60pct": 699385,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-e450250809",
@@ -3637,7 +3677,7 @@
     "tax_rate": null,
     "zestimate": 315301,
     "zestimate_60pct": 189180,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-254665b2e3",
@@ -3837,7 +3877,7 @@
     "tax_rate": null,
     "zestimate": 514000,
     "zestimate_60pct": 308400,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-6a14ed0439",
@@ -4057,7 +4097,7 @@
     "tax_rate": null,
     "zestimate": 398000,
     "zestimate_60pct": 238800,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-446ae204aa",
@@ -4117,7 +4157,7 @@
     "tax_rate": null,
     "zestimate": 204000,
     "zestimate_60pct": 122400,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-fca5fbcdba",
@@ -4137,7 +4177,7 @@
     "tax_rate": null,
     "zestimate": 749859,
     "zestimate_60pct": 449915,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-0ea7827cbd",
@@ -4157,7 +4197,7 @@
     "tax_rate": null,
     "zestimate": 498473,
     "zestimate_60pct": 299083,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-0c2a4d133b",
@@ -4337,7 +4377,7 @@
     "tax_rate": null,
     "zestimate": 278500,
     "zestimate_60pct": 167100,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-21bdcf7bef",
@@ -4437,7 +4477,7 @@
     "tax_rate": null,
     "zestimate": 780782,
     "zestimate_60pct": 468469,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-175ef2b0d8",
@@ -4577,7 +4617,7 @@
     "tax_rate": null,
     "zestimate": 494000,
     "zestimate_60pct": 296400,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-d916cdc91b",
@@ -4597,7 +4637,7 @@
     "tax_rate": null,
     "zestimate": 458989,
     "zestimate_60pct": 275393,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-4970c822c7",
@@ -4917,7 +4957,7 @@
     "tax_rate": null,
     "zestimate": 400800,
     "zestimate_60pct": 240480,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-9787720dad",
@@ -5057,7 +5097,7 @@
     "tax_rate": null,
     "zestimate": 977063,
     "zestimate_60pct": 586237,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-4271f29971",
@@ -5177,7 +5217,7 @@
     "tax_rate": null,
     "zestimate": 494197,
     "zestimate_60pct": 296518,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-261faec04d",
@@ -5237,7 +5277,7 @@
     "tax_rate": null,
     "zestimate": 439000,
     "zestimate_60pct": 263400,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-f28c8f662e",
@@ -5257,7 +5297,7 @@
     "tax_rate": null,
     "zestimate": 1293000,
     "zestimate_60pct": 775800,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-4858e88bf2",
@@ -5277,7 +5317,7 @@
     "tax_rate": null,
     "zestimate": 940000,
     "zestimate_60pct": 564000,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-bd0c071624",
@@ -5377,7 +5417,7 @@
     "tax_rate": null,
     "zestimate": 568800,
     "zestimate_60pct": 341280,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-3f2ce8926f",
@@ -5397,7 +5437,7 @@
     "tax_rate": null,
     "zestimate": 598301,
     "zestimate_60pct": 358980,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-9e8ccf0404",
@@ -5677,7 +5717,7 @@
     "tax_rate": null,
     "zestimate": 357000,
     "zestimate_60pct": 214200,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-26bfdb8479",
@@ -6017,7 +6057,7 @@
     "tax_rate": null,
     "zestimate": 680200,
     "zestimate_60pct": 408120,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-e19736c85f",
@@ -6137,7 +6177,7 @@
     "tax_rate": null,
     "zestimate": 756137,
     "zestimate_60pct": 453682,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-0f078dbcc1",
@@ -6237,7 +6277,7 @@
     "tax_rate": null,
     "zestimate": 470000,
     "zestimate_60pct": 282000,
-    "scraped": "2026-11-12"
+    "scraped": "2026-11-13"
   },
   {
     "id": "sc-fce0d710c9",
@@ -7378,85 +7418,5 @@
     "zestimate": null,
     "zestimate_60pct": null,
     "scraped": "2026-08-15"
-  },
-  {
-    "id": "sc-957906410b",
-    "address": "Multiple properties \u2014 Falls Chu",
-    "zip": "",
-    "county": "Falls Chu",
-    "market": "dmv",
-    "stage": "Tax Deed",
-    "filed": "2026-08-14",
-    "auction": null,
-    "est_value": null,
-    "source": "TACS (taxva.com)",
-    "url": "https://taxva.com/rs-tax-sales/city-of-falls-church-initial-advertisement-2/",
-    "notes": "VA tax deed sale \u2014 Falls Chu. See link for properties.",
-    "tax_owed": null,
-    "redemption_period": "",
-    "tax_rate": null,
-    "zestimate": null,
-    "zestimate_60pct": null,
-    "scraped": "2026-08-14"
-  },
-  {
-    "id": "sc-cef8269617",
-    "address": "Multiple properties \u2014 Alexand",
-    "zip": "",
-    "county": "Alexand",
-    "market": "dmv",
-    "stage": "Tax Deed",
-    "filed": "2026-08-14",
-    "auction": null,
-    "est_value": null,
-    "source": "TACS (taxva.com)",
-    "url": "https://taxva.com/rs-tax-sales/city-of-alexandria-initial-advertisement-2/",
-    "notes": "VA tax deed sale \u2014 Alexand. See link for properties.",
-    "tax_owed": null,
-    "redemption_period": "",
-    "tax_rate": null,
-    "zestimate": null,
-    "zestimate_60pct": null,
-    "scraped": "2026-08-14"
-  },
-  {
-    "id": "sc-f946bc8de3",
-    "address": "7993 MOHAWK TRAIL",
-    "zip": "",
-    "county": "Lucas",
-    "market": "lucas",
-    "stage": "Auction",
-    "filed": "2026-08-14",
-    "auction": "2026-09-14",
-    "est_value": 119000,
-    "source": "Amlin Auctions",
-    "url": "https://www.amlinauctions.com/auctions/detail/bw167450",
-    "notes": "MINIMUM BID AUCTION $119,000! 7993 Mohawk Trl",
-    "tax_owed": null,
-    "redemption_period": "",
-    "tax_rate": null,
-    "zestimate": null,
-    "zestimate_60pct": null,
-    "scraped": "2026-08-16"
-  },
-  {
-    "id": "sc-d0fd6570b7",
-    "address": "1923 W ALEXIS ROAD, TOLEDO",
-    "zip": "43613",
-    "county": "Lucas",
-    "market": "lucas",
-    "stage": "Auction",
-    "filed": "2026-08-14",
-    "auction": "2026-08-14",
-    "est_value": null,
-    "source": "Amlin Auctions",
-    "url": "https://www.amlinauctions.com/auctions/detail/bw167192",
-    "notes": "Cards, Comics, stuffed animals and more. Online only auction.",
-    "tax_owed": null,
-    "redemption_period": "",
-    "tax_rate": null,
-    "zestimate": 134000,
-    "zestimate_60pct": 80400,
-    "scraped": "2026-08-26"
   }
 ]
